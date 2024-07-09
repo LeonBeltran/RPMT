@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Project - RPMT{% endblock %}
+
+{% block content %}
+<div class="container align-items-center justify-content-center">
+    <div class="row mb-3 mx-auto text-center">
+        <h1>Add Project Info</h1>
+    </div>
+    <div style="width: 75%; height: 450px;" class="row p-3 mx-auto rounded-3 overflow-y-scroll bg-gradient border border-dark-subtle align-items-center justify-content-center">
+        <form action="#" method="POST">
+            <input type="text" class="form-control mb-3" placeholder="Title">
+            <textarea type="text" class="form-control mb-3" rows="5" placeholder="Abstract"></textarea>
+            <input type="text" class="form-control mb-3" placeholder="Authors (First Name M.I. Last Name, First Name M.I. Last Name, etc.)">
+            <input type="text" class="form-control mb-3 w-25" placeholder="Publication Type">
+            <input type="text" class="form-control mb-3 w-25" placeholder="Other Publication Type">
+            <input type="text" class="form-control mb-3 w-25" placeholder="Date (MM/DD/YYYY)">
+            <input type="text" class="form-control mb-3" placeholder="Journal/Book/Publication Conference Name">
+            <input type="text" class="form-control mb-3" placeholder="Publisher Name">
+            <input type="text" class="form-control mb-3 w-25" placeholder="Publisher Type">
+            <input type="text" class="form-control mb-3 w-25" placeholder="Publisher Location">
+            <input type="text" class="form-control mb-3" placeholder="Editors (First Name M.I. Last Name, First Name M.I. Last Name, etc.)">
+            <input type="number" class="form-control mb-3 w-25" placeholder="Volume & Issue No.">
+            <input type="text" class="form-control mb-3" placeholder="DOI or URL">
+            <select class="form-select mb-3 w-25">
+                <option selected>ISBN or ISSN</option>
+                <option value="None">N/A</option>
+                <option value="ISBN">ISBN</option>
+                <option value="ISSN">ISSN</option>
+            </select>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Web of Science (formerly ISI)
+                </label>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Elsevier's Scopus
+                </label>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Elsevier's ScienceDirect
+                </label>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    PubMed/MEDLINE
+                </label>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    CHED-Recognized Journals
+                </label>
+            </div>
+            <input type="text" class="form-control mb-3" placeholder="Other Reputable Collection/Database">
+            <input type="number" class="form-control mb-3 w-25" placeholder="No. of Citations">
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Proof of/Accepted for Publication Image</label>
+                <input class="form-control" type="file" id="formFile">
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Proof of Utilization Image</label>
+                <input class="form-control" type="file" id="formFile">
+            </div>
+            <button type="submit" class="btn btn-warning">Proceed</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
