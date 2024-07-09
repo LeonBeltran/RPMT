@@ -1,0 +1,4 @@
+/.venv
+/Scratch
+.env
+.DS_Store
