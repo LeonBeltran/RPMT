@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 
 app = Flask(__name__)
 
@@ -44,7 +44,7 @@ dummy_data = [
 
 @app.get("/projects/")
 def list_projects():
-    return render_template("projectlist.html", data=dummy_data)
+    return render_template("projectlist.html", data=dummy_data, mode="View")
 @app.get("/projects/<int:paper_id>")
 def show_project(paper_id):
     return render_template("projectpage.html", project=dummy_data[paper_id])
@@ -68,19 +68,20 @@ def admin():
 # ----------------------------------------------------------------------------------------------
 @app.get("/admin/report")
 def show_projects_report():
-    return "<p>Reports Generation</p>"
+    return render_template("report.html")
 
 # Admin: Adding Projects
 # ----------------------------------------------------------------------------------------------
 @app.get("/admin/add")
-# @app.get("/admin/add/info")
-def add_project_info_get():
-    return render_template("addproject.html")
+def add_project_get():
+    return render_template("projectform.html")
 
 @app.post("/admin/add")
+def add_project_post():
+    return render_template("projectform.html")
+
+# @app.get("/admin/add/info")
 # @app.post("/admin/add/info")
-def add_project_info_post():
-    return render_template("addproject.html")
 
 # @app.get("/admin/add/authors")
 # def add_project_authors_get():
@@ -102,23 +103,27 @@ def add_project_info_post():
 # ----------------------------------------------------------------------------------------------
 @app.get("/admin/delete/")
 def admin_delete_projects():
-    return "<p>Deletable Projects</p>"
+    return render_template("projectlist.html", data=dummy_data, mode="Delete")
 
 @app.get("/admin/delete/<int:paper_id>")
 def delete_project(paper_id):
-    return f"<p>Deleting ID: {paper_id}</p>"
+    data = [dummy_data[paper_id]]
+    return render_template("projectlist.html", data=data, mode="Deleted")
 
 # Admin: Editing Projects
 # ----------------------------------------------------------------------------------------------
 @app.get("/admin/edit/")
 def admin_edit_projects():
-    return "<p>Editable Projects</p>"
+    return render_template("projectlist.html", data=dummy_data, mode="Edit")
 
 @app.get("/admin/edit/<int:paper_id>")
-def edit_project(paper_id):
-    return f"<p>Editing ID: {paper_id}</p>"
-# Editing area will be similar to Adding area
-# Check if there is a way to just combine these into 1 with projects page
+def edit_project_get(paper_id):
+    mode = "Editing " + dummy_data[paper_id]["Name"]
+    return render_template("projectform.html", mode=mode)
+@app.post("/admin/edit/<int:paper_id>")
+def edit_project_post(paper_id):
+    mode = "Edited " + dummy_data[paper_id]["Name"]
+    return render_template("projectform.html", mode=mode)
 
 if __name__ == '__main__':
     app.run(debug=True)
