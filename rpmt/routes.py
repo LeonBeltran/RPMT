@@ -1,7 +1,7 @@
 from flask import render_template
 from rpmt import app
 
-from Scratch.dummydata import dummy_data
+from _scratch.dummydata import dummy_data
 
 # Home Page
 # ----------------------------------------------------------------------------------------------

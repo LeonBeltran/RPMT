@@ -1,5 +1,5 @@
 /.venv
-/Scratch
+/_scratch
 .env
 .DS_Store
 /__pycache__
