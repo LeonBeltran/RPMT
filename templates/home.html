@@ -9,12 +9,12 @@
     </div>
     <div class="row">
         <div class="col d-flex justify-content-center mb-3">
-            <a href="/projects/" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 450px;">
+            <a href="{{ url_for('project_list') }}" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 450px;">
                 <h1>View Existing Projects</h1>
             </a>
         </div>
         <div class="col d-flex justify-content-center mb-3">
-            <a href="/admin/" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 450px;">
+            <a href="{{ url_for('admin') }}" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 450px;">
                 <h1>Administration Area</h1>
             </a>
         </div>

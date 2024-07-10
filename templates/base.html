@@ -9,16 +9,16 @@
 <body>
     <nav class="mb-3 navbar navbar-expand-lg bg-gradient">
         <div class="container-fluid">
-            <a class="navbar-brand text-warning" href="/home" >RPMT</a>
+            <a class="navbar-brand text-warning" href="{{ url_for('home') }}" >RPMT</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
-                    <a class="nav-link" href="/home">Home</a>
-                    <a class="nav-link" href="/projects/">Projects</a>
-                    <a class="nav-link" href="/admin/">Admin</a>
-                    <a class="nav-link" href="/login">Login</a>
+                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    <a class="nav-link" href="{{ url_for('project_list') }}">Projects</a>
+                    <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
+                    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
                 </div>
             </div>
         </div>

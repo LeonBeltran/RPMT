@@ -9,24 +9,24 @@
     </div>
     <div class="row">
         <div class="col d-flex justify-content-center mb-3">
-            <a href="add" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 220px;">
+            <a href="{{ url_for('add_project') }}" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 220px;">
                 <h1>Add a New Project</h1>
             </a>
         </div>
         <div class="col d-flex justify-content-center mb-3">
-            <a href="edit/" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 220px;">
+            <a href="{{ url_for('edit_project_list') }}" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 220px;">
                 <h1>Edit an Existing Project</h1>
             </a>
         </div>
     </div>
     <div class="row">
         <div class="col d-flex justify-content-center mb-3">
-            <a href="delete/" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 220px;">
+            <a href="{{ url_for('delete_project_list') }}" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 220px;">
                 <h1>Delete an Existing Project</h1>
             </a>
         </div>
         <div class="col d-flex justify-content-center mb-3">
-            <a href="report" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 220px;">
+            <a href="{{ url_for('report') }}" class="btn w-100 bg-gradient border border-dark-subtle d-flex align-items-center justify-content-center" style="height: 220px;">
                 <h1>View Projects Report</h1>
             </a>
         </div>

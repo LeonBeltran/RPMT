@@ -22,16 +22,16 @@ def home():
 # ----------------------------------------------------------------------------------------------
 
 @app.get("/projects/")
-def list_projects():
+def project_list():
     return render_template("projectlist.html", data=dummy_data, mode="View")
 @app.get("/projects/<int:paper_id>")
-def show_project(paper_id):
+def project_page(paper_id):
     return render_template("projectpage.html", project=dummy_data[paper_id])
 
 # Admin: Login Page
 # ----------------------------------------------------------------------------------------------
 @app.get("/login")
-def login_get():
+def login():
     return render_template("login.html")
 @app.post("/login")
 def login_post():
@@ -46,13 +46,13 @@ def admin():
 # Admin: Generate Projects Report
 # ----------------------------------------------------------------------------------------------
 @app.get("/admin/report")
-def show_projects_report():
+def report():
     return render_template("report.html")
 
 # Admin: Adding Projects
 # ----------------------------------------------------------------------------------------------
 @app.get("/admin/add")
-def add_project_get():
+def add_project():
     return render_template("projectform.html")
 
 @app.post("/admin/add")
@@ -62,7 +62,7 @@ def add_project_post():
 # Admin: Deleting Projects
 # ----------------------------------------------------------------------------------------------
 @app.get("/admin/delete/")
-def admin_delete_projects():
+def delete_project_list():
     return render_template("projectlist.html", data=dummy_data, mode="Delete")
 
 @app.get("/admin/delete/<int:paper_id>")
@@ -73,11 +73,11 @@ def delete_project(paper_id):
 # Admin: Editing Projects
 # ----------------------------------------------------------------------------------------------
 @app.get("/admin/edit/")
-def admin_edit_projects():
+def edit_project_list():
     return render_template("projectlist.html", data=dummy_data, mode="Edit")
 
 @app.get("/admin/edit/<int:paper_id>")
-def edit_project_get(paper_id):
+def edit_project(paper_id):
     mode = "Editing " + dummy_data[paper_id]["Name"]
     return render_template("projectform.html", mode=mode)
 @app.post("/admin/edit/<int:paper_id>")
