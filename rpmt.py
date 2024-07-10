@@ -72,31 +72,31 @@ def show_projects_report():
 
 # Admin: Adding Projects
 # ----------------------------------------------------------------------------------------------
-@app.get("/admin/add/")
-@app.get("/admin/add/info")
+@app.get("/admin/add")
+# @app.get("/admin/add/info")
 def add_project_info_get():
     return render_template("addproject.html")
 
-@app.post("/admin/add/")
-@app.post("/admin/add/info")
+@app.post("/admin/add")
+# @app.post("/admin/add/info")
 def add_project_info_post():
     return render_template("addproject.html")
 
-@app.get("/admin/add/authors")
-def add_project_authors_get():
-    return "<p>GET Add Project Authors </p>"
+# @app.get("/admin/add/authors")
+# def add_project_authors_get():
+#     return "<p>GET Add Project Authors </p>"
 
-@app.post("/admin/add/authors")
-def add_project_authors_post():
-    return "<p>POST Add Project Authors</p>"
+# @app.post("/admin/add/authors")
+# def add_project_authors_post():
+#     return "<p>POST Add Project Authors</p>"
 
-@app.get("/admin/add/editors")
-def add_project_editors_get():
-    return "<p>GET Add Project Editors </p>"
+# @app.get("/admin/add/editors")
+# def add_project_editors_get():
+#     return "<p>GET Add Project Editors </p>"
 
-@app.post("/admin/add/editors")
-def add_project_editors_post():
-    return "<p>POST Add Project Editors</p>"
+# @app.post("/admin/add/editors")
+# def add_project_editors_post():
+#     return "<p>POST Add Project Editors</p>"
 
 # Admin: Deleting Projects
 # ----------------------------------------------------------------------------------------------
