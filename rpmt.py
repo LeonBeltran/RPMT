@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template
+from Scratch.dummydata import dummy_data
 
 app = Flask(__name__)
 
@@ -11,36 +12,6 @@ def home():
 
 # Projects Page
 # ----------------------------------------------------------------------------------------------
-dummy_data = [
-    {
-        "ID": 0,
-        "Name": "Bro L. Loan"    
-    },
-    {
-        "ID": 1,
-        "Name": "Kar R. Igan"    
-    },
-    {
-        "ID": 2,
-        "Name": "Jame W. Time"    
-    },
-    {
-        "ID": 3,
-        "Name": "Robin S. Kool"    
-    },
-    {
-        "ID": 4,
-        "Name": "Pasha B. Friend"    
-    },
-    {
-        "ID": 5,
-        "Name": "Sasha S. Bench (Bottom textBottom textBottom textBottom textBottom textBottom textBottom textBottom textBottom textBottom text)"    
-    },
-    {
-        "ID": 6,
-        "Name": "Aut quasi perspiciatis qui adipisci eveniet et repudiandae omnis ut eligendi nostrum aut doloribus ducimus a provident consequatur ut distinctio commodi."    
-    }
-]
 
 @app.get("/projects/")
 def list_projects():
@@ -79,25 +50,6 @@ def add_project_get():
 @app.post("/admin/add")
 def add_project_post():
     return render_template("projectform.html")
-
-# @app.get("/admin/add/info")
-# @app.post("/admin/add/info")
-
-# @app.get("/admin/add/authors")
-# def add_project_authors_get():
-#     return "<p>GET Add Project Authors </p>"
-
-# @app.post("/admin/add/authors")
-# def add_project_authors_post():
-#     return "<p>POST Add Project Authors</p>"
-
-# @app.get("/admin/add/editors")
-# def add_project_editors_get():
-#     return "<p>GET Add Project Editors </p>"
-
-# @app.post("/admin/add/editors")
-# def add_project_editors_post():
-#     return "<p>POST Add Project Editors</p>"
 
 # Admin: Deleting Projects
 # ----------------------------------------------------------------------------------------------
