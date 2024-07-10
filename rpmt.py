@@ -1,7 +1,15 @@
 from flask import Flask, render_template
 from Scratch.dummydata import dummy_data
+from dotenv import load_dotenv
+import os
 
+# Setup
+# ----------------------------------------------------------------------------------------------
 app = Flask(__name__)
+
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")
+app.config['SECRET_KEY'] = SECRET_KEY
 
 # Home Page
 # ----------------------------------------------------------------------------------------------
