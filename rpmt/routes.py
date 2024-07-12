@@ -1,5 +1,8 @@
-from flask import render_template
-from rpmt import app
+from flask import render_template, flash, redirect, url_for
+from flask_login import login_user
+from rpmt import app, db, bcrypt
+from rpmt.forms import LoginForm
+from rpmt.models import User
 
 from _scratch.dummydata import dummy_data
 
@@ -24,10 +27,23 @@ def project_page(paper_id):
 # ----------------------------------------------------------------------------------------------
 @app.get("/login")
 def login():
-    return render_template("login.html")
+    form = LoginForm()
+    return render_template("login.html", form=form)
 @app.post("/login")
 def login_post():
-    return render_template("login.html")
+    form = LoginForm()
+    
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            flash(f'Logged in as {user.username}', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login unsuccessful, please check your username and password. Contact the site administrators if you believe something is wrong.', 'danger')
+    
+    return render_template("login.html", form=form)
 
 # Admin: Admin Area
 # ----------------------------------------------------------------------------------------------
