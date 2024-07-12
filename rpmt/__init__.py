@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+
 from dotenv import load_dotenv
 import os
 
@@ -14,7 +16,12 @@ app.config['SECRET_KEY'] = SECRET_KEY
 # ----------------------------------------------------------------------------------------------
 # Local file method
 # Stored in instance/data.db
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# Authentication
+# ----------------------------------------------------------------------------------------------
+bcrypt = Bcrypt(app)
 
 from rpmt import routes
