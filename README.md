@@ -1,9 +1,10 @@
 # Research Project Management Tool
 CS 195 Internship Project for MY 2024 under Department of Industrial Engineering and Operations Research
 
-## Steps to Run
+## Start Server
+* Instructions are in MACOS format
 
-### Localhost (MACOS)
+### Localhost
 1. Clone the repository.
 ```git clone [REPO_URL]```
 2. Open terminal and go to root folder path.
@@ -16,3 +17,13 @@ CS 195 Internship Project for MY 2024 under Department of Industrial Engineering
 5. Run rpmt.py to start the server in debug mode.
 ```python3 rptm.py```
 6. Open http://127.0.0.1:5000 to view the web application.
+
+## User Management
+### Adding Users
+```python3 add_user.py [USERNAME] [EMAIL] [PASSWORD] [ROLE]```
+
+### Deleting Users
+```python3 delete_user.py [USERNAME]```
+
+### View All Users
+```python3 all_users.py```
