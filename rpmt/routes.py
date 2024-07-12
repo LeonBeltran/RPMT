@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, url_for
-from flask_login import login_user
+from flask_login import login_user, current_user, logout_user
 from rpmt import app, db, bcrypt
 from rpmt.forms import LoginForm
 from rpmt.models import User
@@ -44,6 +44,14 @@ def login_post():
             flash('Login unsuccessful, please check your username and password. Contact the site administrators if you believe something is wrong.', 'danger')
     
     return render_template("login.html", form=form)
+
+# Logout
+# ----------------------------------------------------------------------------------------------
+@app.route("/logout")
+def logout():
+    logout_user()
+    flash(f'Logged out successfully', 'success')
+    return redirect(url_for('home'))
 
 # Admin: Admin Area
 # ----------------------------------------------------------------------------------------------
