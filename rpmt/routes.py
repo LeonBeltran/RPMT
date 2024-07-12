@@ -40,7 +40,7 @@ def login_post():
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
-            flash('Login unsuccessful, please check your username and password. Contact the site administrators if you believe something is wrong.', 'danger')
+            flash('Login unsuccessful, please check your credentials. Contact the site administrators if you believe something is wrong.', 'danger')
     return render_template("login.html", form=form)
 
 # Logout
