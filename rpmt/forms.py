@@ -4,31 +4,46 @@ from wtforms.validators import DataRequired, Length, URL, Optional
 
 class LoginForm(FlaskForm): 
     username = StringField('Username',
-                           validators=[DataRequired(), Length(min=1, max=128)])
+                           validators=[DataRequired(), Length(max=128)])
     password = StringField('Password',
-                           validators=[DataRequired(), Length(min=1, max=64)])
+                           validators=[DataRequired(), Length(max=64)])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
     
 class ProjectForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired(), Length(max=256)])
-    abstract = StringField('Abstract', validators=[Optional(), Length(max=512)])
-    type = StringField('Type', validators=[DataRequired(), Length(max=64)])
-    date_published = DateField('Date Published', validators=[DataRequired()])
-    publication_name = StringField('Publication Name', validators=[DataRequired(), Length(max=128)])
-    publisher = StringField('Publisher', validators=[DataRequired(), Length(max=64)])
-    publisher_type = StringField('Publisher Type', validators=[DataRequired(), Length(max=32)])
-    publisher_location = StringField('Publisher Location', validators=[DataRequired(), Length(max=16)])
-    vol_issue_no = IntegerField('Volume/Issue No', validators=[DataRequired()])
-    doi_url = StringField('DOI URL', validators=[DataRequired(), URL(), Length(max=256)])
-    isbn_issn = StringField('ISBN/ISSN', validators=[DataRequired(), Length(max=4)])
+    title = StringField('Title',
+                        validators=[DataRequired(), Length(max=256)])
+    abstract = StringField('Abstract',
+                           validators=[Optional(), Length(max=512)])
+    type = StringField('Type',
+                       validators=[DataRequired(), Length(max=64)])
+    date_published = DateField('Date Published',
+                               validators=[DataRequired()])
+    publication_name = StringField('Publication Name',
+                                   validators=[DataRequired(), Length(max=128)])
+    publisher = StringField('Publisher',
+                            validators=[DataRequired(), Length(max=64)])
+    publisher_type = StringField('Publisher Type',
+                                 validators=[DataRequired(), Length(max=32)])
+    publisher_location = StringField('Publisher Location',
+                                     validators=[DataRequired(), Length(max=16)])
+    vol_issue_no = IntegerField('Volume/Issue No',
+                                validators=[DataRequired()])
+    doi_url = StringField('DOI URL',
+                          validators=[DataRequired(), URL(), Length(max=256)])
+    isbn_issn = StringField('ISBN/ISSN',
+                            validators=[DataRequired(), Length(max=4)])
     web_of_science = BooleanField('Web of Science')
     elsevier_scopus = BooleanField('Elsevier Scopus')
     elsevier_sciencedirect = BooleanField('Elsevier ScienceDirect')
     pubmed_medline = BooleanField('PubMed/Medline')
     ched_recognized = BooleanField('CHED Recognized')
-    other_database = StringField('Other Database', validators=[Optional(), Length(max=128)])
-    publication_proof = StringField('Publication Proof', validators=[Optional(), Length(max=32)], default='none.png')
-    citations = IntegerField('Citations', validators=[DataRequired()])
-    utilization_proof = StringField('Utilization Proof', validators=[Optional(), Length(max=32)], default='none.png')
+    other_database = StringField('Other Database',
+                                 validators=[Optional(), Length(max=128)])
+    publication_proof = StringField('Publication Proof',
+                                    validators=[Optional(), Length(max=32)], default='none.png')
+    citations = IntegerField('Citations',
+                             validators=[DataRequired()])
+    utilization_proof = StringField('Utilization Proof',
+                                    validators=[Optional(), Length(max=32)], default='none.png')
     submit = SubmitField('Submit')
