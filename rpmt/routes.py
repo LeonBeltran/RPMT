@@ -27,6 +27,9 @@ def project_page(paper_id):
 # ----------------------------------------------------------------------------------------------
 @app.get("/login")
 def login():
+    if current_user.is_authenticated:
+        flash(f'Already logged in as {current_user.username}', 'warning')
+        return redirect(url_for('home'))
     form = LoginForm()
     return render_template("login.html", form=form)
 @app.post("/login")
