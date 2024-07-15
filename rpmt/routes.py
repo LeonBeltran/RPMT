@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, current_user, logout_user, login_required
 from rpmt import app, db, bcrypt
-from rpmt.forms import LoginForm
+from rpmt.forms import LoginForm, ProjectForm
 from rpmt.models import User
 
 from _scratch.dummydata import dummy_data
@@ -71,12 +71,21 @@ def report():
 @app.get("/admin/add")
 @login_required
 def add_project():
-    return render_template("projectform.html")
-
+    form = ProjectForm()
+    return render_template("projectform.html", form=form)
 @app.post("/admin/add")
 @login_required
 def add_project_post():
-    return render_template("projectform.html")
+    form = ProjectForm
+    
+    if form.validate_on_submit():
+        flash('Project created successfully', 'success')
+        return redirect(url_for('admin'))
+    else:
+        flash('Project creation failed, please try again', 'danger')
+        return redirect('#')
+    
+    return render_template("projectform.html", form=form)
 
 # Admin: Deleting Projects
 # ----------------------------------------------------------------------------------------------
