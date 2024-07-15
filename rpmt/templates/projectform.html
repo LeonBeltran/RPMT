@@ -9,66 +9,82 @@
     </div>
     <div style="width: 75%; height: 450px;" class="row p-3 mx-auto rounded-3 overflow-y-scroll bg-gradient border border-dark-subtle align-items-center justify-content-center">
         <form action="#" method="POST">
-            <input type="text" class="form-control mb-3" placeholder="Title">
-            <textarea type="text" class="form-control mb-3" rows="5" placeholder="Abstract"></textarea>
-            <input type="text" class="form-control mb-3" placeholder="Authors (First Name M.I. Last Name, First Name M.I. Last Name, etc.)">
-            <input type="text" class="form-control mb-3 w-25" placeholder="Publication Type">
-            <input type="text" class="form-control mb-3 w-25" placeholder="Other Publication Type">
-            <input type="text" class="form-control mb-3 w-25" placeholder="Date (MM/DD/YYYY)">
-            <input type="text" class="form-control mb-3" placeholder="Journal/Book/Publication Conference Name">
-            <input type="text" class="form-control mb-3" placeholder="Publisher Name">
-            <input type="text" class="form-control mb-3 w-25" placeholder="Publisher Type">
-            <input type="text" class="form-control mb-3 w-25" placeholder="Publisher Location">
-            <input type="text" class="form-control mb-3" placeholder="Editors (First Name M.I. Last Name, First Name M.I. Last Name, etc.)">
-            <input type="number" class="form-control mb-3 w-25" placeholder="Volume & Issue No.">
-            <input type="text" class="form-control mb-3" placeholder="DOI or URL">
-            <select class="form-select mb-3 w-25">
-                <option selected>ISBN or ISSN</option>
-                <option value="None">N/A</option>
-                <option value="ISBN">ISBN</option>
-                <option value="ISSN">ISSN</option>
-            </select>
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                    Web of Science (formerly ISI)
-                </label>
+            {{ form.hidden_tag() }}
+            <div class="form-group mb-3">
+                {{ form.title(class="form-control", placeholder="Title") }}
             </div>
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                    Elsevier's Scopus
-                </label>
+            <div class="form-group mb-3">
+                {{ form.abstract(class="form-control", placeholder="Abstract", rows="5") }}
             </div>
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                    Elsevier's ScienceDirect
-                </label>
+            <div class="form-group mb-3">
+                {{ form.authors(class="form-control", placeholder="Authors (First Name M.I. Last Name, First Name M.I. Last Name, etc.)") }}
             </div>
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                    PubMed/MEDLINE
-                </label>
+            <div class="form-group mb-3">
+                {{ form.type(class="form-control w-25", placeholder="Publication Type") }}
             </div>
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                    CHED-Recognized Journals
-                </label>
+            <div class="form-group mb-3">
+                {{ form.date_published(class="form-control w-25") }}
             </div>
-            <input type="text" class="form-control mb-3" placeholder="Other Reputable Collection/Database">
-            <input type="number" class="form-control mb-3 w-25" placeholder="No. of Citations">
-            <div class="mb-3">
-                <label for="formFile" class="form-label">Proof of/Accepted for Publication Image</label>
-                <input class="form-control" type="file" id="formFile">
+            <div class="form-group mb-3">
+                {{ form.publication_name(class="form-control", placeholder="Journal/Book/Publication Conference Name") }}
             </div>
-            <div class="mb-3">
-                <label for="formFile" class="form-label">Proof of Utilization Image</label>
-                <input class="form-control" type="file" id="formFile">
+            <div class="form-group mb-3">
+                {{ form.publisher(class="form-control", placeholder="Publisher Name") }}
             </div>
-            <button type="submit" class="btn btn-warning">Proceed</button>
+            <div class="form-group mb-3">
+                {{ form.publisher_type(class="form-control w-25", placeholder="Publisher Type") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.publisher_location(class="form-control w-25", placeholder="Publisher Location") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.editors(class="form-control", placeholder="Editors (First Name M.I. Last Name, First Name M.I. Last Name, etc.)") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.vol_issue_no(class="form-control w-25", placeholder="Volume & Issue No.") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.doi_url(class="form-control", placeholder="DOI or URL") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.isbn_issn.label(class="form-label") }}
+                {{ form.isbn_issn(class="form-select w-25") }}
+            </div>
+            <div class="form-check mb-3" style="text-align: left;">
+                {{ form.web_of_science(class="form-check-input") }}
+                {{ form.web_of_science.label(class="form-check-label") }}
+            </div>
+            <div class="form-check mb-3" style="text-align: left;">
+                {{ form.elsevier_scopus(class="form-check-input") }}
+                {{ form.elsevier_scopus.label(class="form-check-label") }}
+            </div>
+            <div class="form-check mb-3" style="text-align: left;">
+                {{ form.elsevier_sciencedirect(class="form-check-input") }}
+                {{ form.elsevier_sciencedirect.label(class="form-check-label") }}
+            </div>
+            <div class="form-check mb-3" style="text-align: left;">
+                {{ form.pubmed_medline(class="form-check-input") }}
+                {{ form.pubmed_medline.label(class="form-check-label") }}
+            </div>
+            <div class="form-check mb-3" style="text-align: left;">
+                {{ form.ched_recognized(class="form-check-input") }}
+                {{ form.ched_recognized.label(class="form-check-label") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.other_database(class="form-control", placeholder="Other Reputable Collection/Database") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.citations(class="form-control w-25", placeholder="No. of Citations") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.publication_proof.label(class="form-label") }}
+                {{ form.publication_proof(class="form-control") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.utilization_proof.label(class="form-label") }}
+                {{ form.utilization_proof(class="form-control") }}
+            </div>
+            {{ form.submit(class="btn mt-3 mb-5 btn-warning") }}
         </form>
     </div>
 </div>
