@@ -79,15 +79,12 @@ def add_project():
 @app.post("/admin/add")
 @login_required
 def add_project_post():
-    form = ProjectForm
-    
+    form = ProjectForm()
     if form.validate_on_submit():
         flash('Project created successfully', 'success')
         return redirect(url_for('admin'))
     else:
         flash('Project creation failed, please try again', 'danger')
-        return redirect('#')
-    
     return render_template("projectform.html", form=form)
 
 # Admin: Deleting Projects

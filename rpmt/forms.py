@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, BooleanField, DateField, SubmitField, TextAreaField, SelectField, FileField
-from wtforms.validators import DataRequired, Length, URL, Optional
+from wtforms.validators import DataRequired, Length, Optional, InputRequired, NumberRange
 
 class LoginForm(FlaskForm): 
     username = StringField('Username',
@@ -32,9 +32,9 @@ class ProjectForm(FlaskForm):
     editors = StringField('Editors',
                           validators=[DataRequired(), Length(max=512)])
     vol_issue_no = IntegerField('Volume/Issue No',
-                                validators=[DataRequired()])
+                                validators=[InputRequired(), NumberRange(min=0)])
     doi_url = StringField('DOI URL',
-                          validators=[DataRequired(), URL(), Length(max=256)])
+                          validators=[DataRequired(), Length(max=256)])
     isbn_issn = SelectField('ISBN/ISSN',
                             choices=[('NONE', 'None'), ('ISBN', 'ISBN'), ('ISSN', 'ISSN')],
                             validators=[DataRequired()])
@@ -48,7 +48,7 @@ class ProjectForm(FlaskForm):
     publication_proof = FileField('Publication Proof',
                                     validators=[Optional()])
     citations = IntegerField('Citations',
-                             validators=[DataRequired()])
+                             validators=[InputRequired(), NumberRange(min=0)])
     utilization_proof = FileField('Utilization Proof',
                                     validators=[Optional()])
     submit = SubmitField('Submit')
