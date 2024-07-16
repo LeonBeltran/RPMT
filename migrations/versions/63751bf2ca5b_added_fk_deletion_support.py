@@ -1,8 +1,8 @@
-"""Initial migration
+"""Added FK deletion support
 
-Revision ID: 39297d18cb08
+Revision ID: 63751bf2ca5b
 Revises: 
-Create Date: 2024-07-16 10:43:17.284077
+Create Date: 2024-07-16 12:16:53.224197
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '39297d18cb08'
+revision = '63751bf2ca5b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -72,7 +72,7 @@ def upgrade():
     sa.Column('author_id', sa.Integer(), nullable=False),
     sa.Column('project_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['author_id'], ['author.id'], ),
-    sa.ForeignKeyConstraint(['project_id'], ['project.id'], ),
+    sa.ForeignKeyConstraint(['project_id'], ['project.id'], name='fk_author_project_id', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('editor_project',
@@ -80,7 +80,7 @@ def upgrade():
     sa.Column('editor_id', sa.Integer(), nullable=False),
     sa.Column('project_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['editor_id'], ['editor.id'], ),
-    sa.ForeignKeyConstraint(['project_id'], ['project.id'], ),
+    sa.ForeignKeyConstraint(['project_id'], ['project.id'], name='fk_editor_project_id', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

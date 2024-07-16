@@ -35,18 +35,18 @@ class Editor(db.Model):
 class AuthorProject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('author.id'), nullable=False)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id', name='fk_author_project_id', ondelete='CASCADE'), nullable=False)
     
 class EditorProject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     editor_id = db.Column(db.Integer, db.ForeignKey('editor.id'), nullable=False)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id', name='fk_editor_project_id', ondelete='CASCADE'), nullable=False)
 
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     title = db.Column(db.String(256), nullable=False)
-    authors = db.relationship('AuthorProject', backref='project', lazy=True)
+    authors = db.relationship('AuthorProject', backref='project', lazy=True, cascade="all, delete")
     abstract = db.Column(db.String(512), nullable=False)
     type = db.Column(db.String(64), nullable=False)
     date_published = db.Column(db.Date, nullable=False)
@@ -54,7 +54,7 @@ class Project(db.Model):
     publisher = db.Column(db.String(64), nullable=False)
     publisher_type = db.Column(db.String(32), nullable=False)
     publisher_location = db.Column(db.String(16), nullable=False)
-    editors = db.relationship('EditorProject', backref='project', lazy=True)
+    editors = db.relationship('EditorProject', backref='project', lazy=True, cascade="all, delete")
     vol_issue_no = db.Column(db.Integer, nullable=False)
     doi_url = db.Column(db.String(256), unique=True, nullable=False)
     isbn_issn = db.Column(db.String(4), nullable=False)

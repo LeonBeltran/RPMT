@@ -155,6 +155,7 @@ def delete_project(paper_id):
     to_delete = Project.query.filter_by(id=paper_id).first()
     db.session.delete(to_delete)
     db.session.commit()
+    flash('Successfully deleted project', 'success')
     return redirect(url_for('admin'))
 
 # Admin: Editing Projects
