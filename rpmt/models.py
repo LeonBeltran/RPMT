@@ -64,9 +64,9 @@ class Project(db.Model):
     pubmed_medline = db.Column(db.Boolean, nullable=False)
     ched_recognized = db.Column(db.Boolean, nullable=False)
     other_database = db.Column(db.String(128), nullable=False)
-    publication_proof = db.Column(db.String(32), nullable=False, default='none.png')
+    publication_proof = db.Column(db.String(32), nullable=True)
     citations = db.Column(db.Integer, nullable=False)
-    utilization_proof = db.Column(db.String(32), nullable=False, default='none.png')
+    utilization_proof = db.Column(db.String(32), nullable=True)
     
     def __repr__(self):
         return f"Project {self.id}: {self.title}"

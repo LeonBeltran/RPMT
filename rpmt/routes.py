@@ -81,6 +81,30 @@ def add_project():
 def add_project_post():
     form = ProjectForm()
     if form.validate_on_submit():
+        
+        title = form.title.data
+        abstract = form.abstract.data or "No abstract provided"
+        authors = form.authors.data.split(', ')
+        type = form.type.data
+        date_published = form.date_published.data
+        publicaiton_name = form.publication_name.data
+        publisher = form.publisher.data
+        publisher_type = form.publisher_type.data
+        publisher_location = form.publisher_location.data
+        editors = form.editors.data.split(', ')
+        vol_issue_no = form.vol_issue_no.data
+        doi_url = form.doi_url.data
+        isbn_issn = form.isbn_issn.data
+        web_of_science = form.web_of_science.data
+        elsevier_scopus = form.elsevier_scopus.data
+        elsevier_sciencedirect = form.elsevier_sciencedirect.data
+        pubmed_medline = form.pubmed_medline.data
+        ched_recognized = form.ched_recognized.data
+        other_database = form.other_database.data
+        citations = form.citations.data
+        publication_proof = form.publication_proof.data.filename if form.publication_proof.data else "none.png"
+        utilization_proof = form.utilization_proof.data.filename if form.utilization_proof.data else "none.png"
+        
         flash('Project created successfully', 'success')
         return redirect(url_for('admin'))
     else:
