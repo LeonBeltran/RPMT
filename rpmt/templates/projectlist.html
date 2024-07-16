@@ -14,8 +14,8 @@
     </div>
     <div class="row p-3 rounded-3 bg-gradient border border-dark-subtle overflow-y-scroll align-items-center justify-content-center" style="height: 450px">
         {% for entry in data %}
-        <a href="{{ entry.ID }}" class="row mb-3 btn text-bg-dark border border-dark-subtle d-flex align-items-center justify-content-center" style="width: 95%">
-            <h3 style="height: 100%; overflow-x: auto; white-space: nowrap; text-align: left;">{{ entry.Name }}</h3>
+        <a href="{{ entry.id }}" class="row mb-3 btn text-bg-dark border border-dark-subtle d-flex align-items-center justify-content-center" style="width: 95%">
+            <h3 style="height: 100%; overflow-x: auto; white-space: nowrap; text-align: left;">{{ entry.title }}</h3>
         </a>
         {% endfor %}
     </div>
