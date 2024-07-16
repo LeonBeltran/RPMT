@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, current_user, logout_user, login_required
 from rpmt import app, db, bcrypt
 from rpmt.forms import LoginForm, ProjectForm
-from rpmt.models import User
+from rpmt.models import User, Project, Author, Editor, AuthorProject, EditorProject
 
 from _scratch.dummydata import dummy_data
 
@@ -81,32 +81,60 @@ def add_project():
 def add_project_post():
     form = ProjectForm()
     if form.validate_on_submit():
+        try:
+            new_project = Project(
+                creator_id=current_user.id,
+                title=form.title.data,
+                abstract=form.abstract.data or "No abstract provided",
+                type=form.type.data,
+                date_published=form.date_published.data,
+                publicaiton_name=form.publication_name.data,
+                publisher=form.publisher.data,
+                publisher_type=form.publisher_type.data,
+                publisher_location=form.publisher_location.data,
+                vol_issue_no=form.vol_issue_no.data,
+                doi_url=form.doi_url.data,
+                isbn_issn=form.isbn_issn.data,
+                web_of_science=form.web_of_science.data,
+                elsevier_scopus=form.elsevier_scopus.data,
+                elsevier_sciencedirect=form.elsevier_sciencedirect.data,
+                pubmed_medline=form.pubmed_medline.data,
+                ched_recognized=form.ched_recognized.data,
+                other_database=form.other_database.data,
+                citations=form.citations.data,
+                publication_proof=form.publication_proof.data if form.publication_proof.data else "none.png",
+                utilization_proof=form.utilization_proof.data if form.utilization_proof.data else "none.png"
+            )
+            db.session.add(new_project)
+            db.session.commit()
+            
+            authors_data = form.authors.data.split(', ')
+            for author_name in authors_data:
+                author = Author.query.filter_by(name=author_name).first()
+                if not author:
+                    author = Author(name=author_name)
+                    db.session.add(author)
+                    db.session.commit()
+                author_project = AuthorProject(author_id=author.id, project_id=new_project.id)
+                db.session.add(author_project)
+                
+            editors_data = form.editors.data.split(', ')
+            for editor_name in editors_data:
+                editor = Editor.query.filter_by(name=editor_name).first()
+                if not editor:
+                    editor = Editor(name=editor_name)
+                    db.session.add(editor)
+                    db.session.commit()
+                editor_project = EditorProject(editor_id=editor.id, project_id=new_project.id)
+                db.session.add(editor_project)
+            
+            db.session.commit()
         
-        title = form.title.data
-        abstract = form.abstract.data or "No abstract provided"
-        authors = form.authors.data.split(', ')
-        type = form.type.data
-        date_published = form.date_published.data
-        publicaiton_name = form.publication_name.data
-        publisher = form.publisher.data
-        publisher_type = form.publisher_type.data
-        publisher_location = form.publisher_location.data
-        editors = form.editors.data.split(', ')
-        vol_issue_no = form.vol_issue_no.data
-        doi_url = form.doi_url.data
-        isbn_issn = form.isbn_issn.data
-        web_of_science = form.web_of_science.data
-        elsevier_scopus = form.elsevier_scopus.data
-        elsevier_sciencedirect = form.elsevier_sciencedirect.data
-        pubmed_medline = form.pubmed_medline.data
-        ched_recognized = form.ched_recognized.data
-        other_database = form.other_database.data
-        citations = form.citations.data
-        publication_proof = form.publication_proof.data.filename if form.publication_proof.data else "none.png"
-        utilization_proof = form.utilization_proof.data.filename if form.utilization_proof.data else "none.png"
-        
-        flash('Project created successfully', 'success')
-        return redirect(url_for('admin'))
+            flash('Project created successfully', 'success')
+            return redirect(url_for('admin'))
+        except Exception as e:
+                db.session.rollback()
+                flash(f'An error occurred: {str(e)}', 'danger')
     else:
         flash('Project creation failed, please try again', 'danger')
     return render_template("projectform.html", form=form)

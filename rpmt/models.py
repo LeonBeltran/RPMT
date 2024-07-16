@@ -47,7 +47,7 @@ class Project(db.Model):
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     title = db.Column(db.String(256), nullable=False)
     authors = db.relationship('AuthorProject', backref='project', lazy=True)
-    abstract = db.Column(db.String(512), nullable=True)
+    abstract = db.Column(db.String(512), nullable=False)
     type = db.Column(db.String(64), nullable=False)
     date_published = db.Column(db.Date, nullable=False)
     publication_name = db.Column(db.String(128), nullable=False)
@@ -64,9 +64,9 @@ class Project(db.Model):
     pubmed_medline = db.Column(db.Boolean, nullable=False)
     ched_recognized = db.Column(db.Boolean, nullable=False)
     other_database = db.Column(db.String(128), nullable=False)
-    publication_proof = db.Column(db.String(32), nullable=True)
+    publication_proof = db.Column(db.String(32), nullable=False)
     citations = db.Column(db.Integer, nullable=False)
-    utilization_proof = db.Column(db.String(32), nullable=True)
+    utilization_proof = db.Column(db.String(32), nullable=False)
     
     def __repr__(self):
         return f"Project {self.id}: {self.title}"
