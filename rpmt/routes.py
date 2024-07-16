@@ -88,7 +88,7 @@ def add_project_post():
                 abstract=form.abstract.data or "No abstract provided",
                 type=form.type.data,
                 date_published=form.date_published.data,
-                publicaiton_name=form.publication_name.data,
+                publication_name=form.publication_name.data,
                 publisher=form.publisher.data,
                 publisher_type=form.publisher_type.data,
                 publisher_location=form.publisher_location.data,
@@ -133,8 +133,8 @@ def add_project_post():
             flash('Project created successfully', 'success')
             return redirect(url_for('admin'))
         except Exception as e:
-                db.session.rollback()
-                flash(f'An error occurred: {str(e)}', 'danger')
+            db.session.rollback()
+            flash(f'An error occurred: {str(e)}', 'danger')
     else:
         flash('Project creation failed, please try again', 'danger')
     return render_template("projectform.html", form=form)

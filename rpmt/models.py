@@ -39,7 +39,7 @@ class AuthorProject(db.Model):
     
 class EditorProject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('editor.id'), nullable=False)
+    editor_id = db.Column(db.Integer, db.ForeignKey('editor.id'), nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
 
 class Project(db.Model):
