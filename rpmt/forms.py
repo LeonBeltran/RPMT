@@ -47,8 +47,10 @@ class ProjectForm(FlaskForm):
                                  validators=[Optional(), Length(max=128)])
     publication_proof = FileField('Publication Proof',
                                     validators=[Optional()])
+    clear_publication_proof = BooleanField('Remove Publication Proof Image (Ignore if new project or adding new image)')
     citations = IntegerField('Citations',
                              validators=[InputRequired(), NumberRange(min=0)])
     utilization_proof = FileField('Utilization Proof',
                                     validators=[Optional()])
+    clear_utilization_proof = BooleanField('Remove Utilization Proof Image (Ignore if new project or adding new image)')
     submit = SubmitField('Submit')

@@ -180,6 +180,7 @@ def edit_project(paper_id):
     form = ProjectForm(obj=project)
     form.authors.data = authors_data
     form.editors.data = editors_data
+
     return render_template("projectform.html", mode=mode, form=form)
 @app.post("/admin/edit/<int:paper_id>")
 @login_required
@@ -207,8 +208,16 @@ def edit_project_post(paper_id):
             project.ched_recognized = form.ched_recognized.data
             project.other_database = form.other_database.data
             project.citations = form.citations.data
-            project.publication_proof = form.publication_proof.data if form.publication_proof.data else "none.png"
-            project.utilization_proof = form.utilization_proof.data if form.utilization_proof.data else "none.png"
+            
+            if form.clear_publication_proof.data:
+                project.publication_proof = "none.png"
+            elif form.publication_proof.data:
+                project.publication_proof = form.publication_proof.data 
+        
+            if form.clear_utilization_proof.data:
+                project.utilization_proof = "none.png"
+            elif form.utilization_proof.data:
+                project.utilization_proof = form.utilization_proof.data
             
             AuthorProject.query.filter_by(project_id=project.id).delete()
             EditorProject.query.filter_by(project_id=project.id).delete()

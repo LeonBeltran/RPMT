@@ -80,9 +80,17 @@
                 {{ form.publication_proof.label(class="form-label") }}
                 {{ form.publication_proof(class="form-control") }}
             </div>
+            <div class="form-check mb-3" style="text-align: left;">
+                {{ form.clear_publication_proof(class="form-check-input") }}
+                {{ form.clear_publication_proof.label(class="form-check-label") }}
+            </div>
             <div class="form-group mb-3">
                 {{ form.utilization_proof.label(class="form-label") }}
                 {{ form.utilization_proof(class="form-control") }}
+            </div>
+            <div class="form-check mb-3" style="text-align: left;">
+                {{ form.clear_utilization_proof(class="form-check-input") }}
+                {{ form.clear_utilization_proof.label(class="form-check-label") }}
             </div>
             {{ form.submit(class="btn mt-3 mb-5 btn-warning") }}
         </form>
