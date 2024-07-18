@@ -14,8 +14,8 @@ CS 195 Internship Project for MY 2024 under Department of Industrial Engineering
 ```source [VENV_FOLDER_NAME]/bin/activate```
 4. Download the project dependencies.
 ```pip install -r requirements.txt```
-5. Run rpmt.py to start the server in debug mode.
-```python3 rpmt.py```
+5. Run app.py to start the server in debug mode.
+```python3 app.py```
 6. Open http://127.0.0.1:5000 to view the web application.
 
 ## User Management
