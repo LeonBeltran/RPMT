@@ -76,11 +76,13 @@ def report():
 @app.get("/admin/add")
 @login_required
 def add_project():
+    mode = "Adding a New Project"
     form = ProjectForm()
-    return render_template("projectform.html", form=form)
+    return render_template("projectform.html", form=form, mode=mode)
 @app.post("/admin/add")
 @login_required
 def add_project_post():
+    mode = "Adding a New Project"
     form = ProjectForm()
     if form.validate_on_submit():
         try:
@@ -139,7 +141,7 @@ def add_project_post():
             flash(f'An error occurred: {str(e)}', 'danger')
     else:
         flash('Project creation failed, please try again', 'danger')
-    return render_template("projectform.html", form=form)
+    return render_template("projectform.html", form=form, mode=mode)
 
 # Admin: Deleting Projects
 # ----------------------------------------------------------------------------------------------
@@ -169,11 +171,76 @@ def edit_project_list():
 @app.get("/admin/edit/<int:paper_id>")
 @login_required
 def edit_project(paper_id):
-    mode = "Editing " + dummy_data[paper_id]["title"]
-    form = ProjectForm()
+    project = Project.query.filter_by(id=paper_id).first()
+    mode = "Editing " + project.title
+    
+    authors_data = ', '.join([ap.author.name for ap in project.authors])
+    editors_data = ', '.join([ep.editor.name for ep in project.editors])
+    
+    form = ProjectForm(obj=project)
+    form.authors.data = authors_data
+    form.editors.data = editors_data
     return render_template("projectform.html", mode=mode, form=form)
 @app.post("/admin/edit/<int:paper_id>")
 @login_required
 def edit_project_post(paper_id):
-    mode = "Edited " + dummy_data[paper_id]["title"]
-    return render_template("projectform.html", mode=mode)
+    project = Project.query.filter_by(id=paper_id).first()
+    mode = "Editing " + project.title
+    form = ProjectForm()
+    if form.validate_on_submit():
+        try:
+            project.title = form.title.data
+            project.abstract = form.abstract.data or "No abstract provided"
+            project.type = form.type.data
+            project.date_published = form.date_published.data
+            project.publication_name = form.publication_name.data
+            project.publisher = form.publisher.data
+            project.publisher_type = form.publisher_type.data
+            project.publisher_location = form.publisher_location.data
+            project.vol_issue_no = form.vol_issue_no.data
+            project.doi_url = form.doi_url.data
+            project.isbn_issn = form.isbn_issn.data
+            project.web_of_science = form.web_of_science.data
+            project.elsevier_scopus = form.elsevier_scopus.data
+            project.elsevier_sciencedirect = form.elsevier_sciencedirect.data
+            project.pubmed_medline = form.pubmed_medline.data
+            project.ched_recognized = form.ched_recognized.data
+            project.other_database = form.other_database.data
+            project.citations = form.citations.data
+            project.publication_proof = form.publication_proof.data if form.publication_proof.data else "none.png"
+            project.utilization_proof = form.utilization_proof.data if form.utilization_proof.data else "none.png"
+            
+            AuthorProject.query.filter_by(project_id=project.id).delete()
+            EditorProject.query.filter_by(project_id=project.id).delete()
+            db.session.commit()
+            
+            project.authors.clear()
+            authors_data = form.authors.data.split(', ')
+            for author_name in authors_data:
+                author = Author.query.filter_by(name=author_name).first()
+                if not author:
+                    author = Author(name=author_name)
+                    db.session.add(author)
+                    db.session.commit()
+                author_project = AuthorProject(author_id=author.id, project_id=project.id)
+                db.session.add(author_project)
+                
+            project.editors.clear()
+            editors_data = form.editors.data.split(', ')
+            for editor_name in editors_data:
+                editor = Editor.query.filter_by(name=editor_name).first()
+                if not editor:
+                    editor = Editor(name=editor_name)
+                    db.session.add(editor)
+                    db.session.commit()
+                editor_project = EditorProject(editor_id=editor.id, project_id=project.id)
+                db.session.add(editor_project)
+            
+            db.session.commit()
+            flash('Project updated successfully', 'success')
+            return redirect(url_for('admin'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred: {str(e)}', 'danger')
+
+    return render_template("projectform.html", mode=mode, form=form)
