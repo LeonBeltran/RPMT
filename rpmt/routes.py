@@ -4,8 +4,6 @@ from rpmt import app, db, bcrypt
 from rpmt.forms import LoginForm, ProjectForm
 from rpmt.models import User, Project, Author, Editor, AuthorProject, EditorProject
 
-from _scratch.dummydata import dummy_data
-
 # Home Page
 # ----------------------------------------------------------------------------------------------
 @app.get("/")
@@ -22,8 +20,12 @@ def project_list():
     return render_template("projectlist.html", data=projects, mode="View")
 @app.get("/projects/<int:paper_id>")
 def project_page(paper_id):
-    project = Project.query.filter_by(id=paper_id)
-    return render_template("projectpage.html", project=project)
+    project = Project.query.filter_by(id=paper_id).first()
+    creator = User.query.filter_by(id=project.creator_id).first()
+    creator_name = creator.username
+    authors_data = ', '.join([ap.author.name for ap in project.authors])
+    editors_data = ', '.join([ep.editor.name for ep in project.editors])
+    return render_template("projectpage.html", project=project, creator=creator_name, authors=authors_data, editors=editors_data)
 
 # Admin: Login Page
 # ----------------------------------------------------------------------------------------------

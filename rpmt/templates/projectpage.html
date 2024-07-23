@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ project.Name }} - RPMT{% endblock %}
+{% block title %}{{ project.title }} - RPMT{% endblock %}
 
 {% block content %}
 <div class="container text-center">
@@ -10,25 +10,67 @@
     <div class="row">
         <div style="text-align: left" class="col m-3 rounded-3 bg-gradient border border-dark-subtle d-flex">
             <div style="height: 445px; overflow-y: auto;" class="col m-3">
-                <h1>Abstract</h1>
-                <p>Lorem ipsum dolor sit amet. Eum sint error est rerum ratione ut rerum vitae quo voluptas enim ab aliquid sunt. Est illo maiores sit molestias quia sit reiciendis amet qui sint corrupti aut illo quia et dolores culpa aut porro iure. Aut quae harum in dolores velit et galisum veritatis cum voluptas dolores est quia Quis aut dolores veniam aut explicabo adipisci. Et molestiae doloribus sit laudantium dolore est sunt odio. Est veniam unde ea delectus illum et eius exercitationem aut tempore nihil quo praesentium voluptates et voluptatum nulla id galisum animi. Qui natus rerum est tempora suscipit ex necessitatibus voluptatem ea itaque saepe. Aut necessitatibus cupiditate est veniam Quis sed veritatis facere eum velit repellat. Qui excepturi velit est assumenda reiciendis ea dolore iste cum perferendis veritatis. Lorem ipsum dolor sit amet. Eum sint error est rerum ratione ut rerum vitae quo voluptas enim ab aliquid sunt. Est illo maiores sit molestias quia sit reiciendis amet qui sint corrupti aut illo quia et dolores culpa aut porro iure. Aut quae harum in dolores velit et galisum veritatis cum voluptas dolores est quia Quis aut dolores veniam aut explicabo adipisci. Et molestiae doloribus sit laudantium dolore est sunt odio. Est veniam unde ea delectus illum et eius exercitationem aut tempore nihil quo praesentium voluptates et voluptatum nulla id galisum animi. Qui natus rerum est tempora suscipit ex necessitatibus voluptatem ea itaque saepe. Aut necessitatibus cupiditate est veniam Quis sed veritatis facere eum velit repellat. Qui excepturi velit est assumenda reiciendis ea dolore iste cum perferendis veritatis.</p>
+                <h1>Project Info</h1>
+                <h4>Publication Title</h4>
+                <p>{{ project.title }}</p>
+                <h4>Authors/Co-authors</h4>
+                <p>{{ authors }}</p>
+                <h4>Abstract</h4>
+                <p>{{ project.abstract }}</p>
+                <h4>Publication Type</h4>
+                <p>{{ project.type }}</p>
+                <h4>Date Published or Accepted for Publication</h4>
+                <p>{{ project.date_published }}</p>
+                <h4>Journal/Book/Conference Publication Name</h4>
+                <p>{{ project.publication_name }}</p>
+                <h4>Publisher Name</h4>
+                <p>{{ project.publisher }}</p>
+                <h4>Publisher Type</h4>
+                <p>{{ project.publisher_type }}</p>
+                <h4>Publisher Location</h4>
+                <p>{{ project.publisher_location }}</p>
+                <h4>Editors</h4>
+                <p>{{ editors }}</p>
+                <h4>Volume & Issue No.</h4>
+                <p>{{ project.vol_issue_no }}</p>
+                <h4>DOI or URL</h4>
+                <p>{{ project.doi_url }}</p>
+                <h4>ISBN or ISSN</h4>
+                <p>{{ project.isbn_issn }}</p>
+                <h4>Web of Science (formerly ISI)</h4>
+                <p>{% if project.web_of_science %}Yes{% else %}No{% endif %}</p>
+                <h4>Elsevier's Scopus</h4>
+                <p>{% if project.elsevier_scopus %}Yes{% else %}No{% endif %}</p>
+                <h4>Elsevier's ScienceDirect</h4>
+                <p>{% if project.elsevier_sciencedirect %}Yes{% else %}No{% endif %}</p>
+                <h4>PUBMED/Medline</h4>
+                <p>{% if project.pubmed_medline %}Yes{% else %}No{% endif %}</p>
+                <h4>CHED-Recognized Journals</h4>
+                <p>{% if project.ched_recognized %}Yes{% else %}No{% endif %}</p>
+                <h4>Other Reputable Collection/Database</h4>
+                <p>{{ project.other_database }}</p>
+                <h4>No. of Citations</h4>
+                <p>{{ project.citations }}</p>
+                <button type="button" class="btn btn-secondary">Proof of Publication</button>
+                <button type="button" class="btn btn-secondary">Proof of Utilization</button>
             </div>
         </div>
         <div style="text-align: left;" class="col m-3">
             <div class="row rounded-3 mb-3 bg-gradient border border-dark-subtle d-flex">
                 <div style="height: 200px; overflow-y: auto;" class="col m-3">
                     <h1>Authors and Contributors</h1>
-                    <p>Author Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name, Contributor Name</p>
+                    <p>{{ authors }}</p>
+                    <h3>Project Added by {{ creator }}</h3>
                 </div>
             </div>
             <div class="row rounded-3 p-3 bg-gradient border border-dark-subtle align-items-center justify-content-center">
                 <h1>Project Links</h1>
                 <br>
-                <button class="btn m-2 btn-light btn-outline-light text-bg-light">
-                    <h3>Button 1</h3>
+                <button class="btn m-2 btn-secondary">
+                    <h3>Download PDF</h3>
                 </button>
-                <button class="btn m-2 btn-light btn-outline-light text-bg-light">
-                    <h3>Get PBB Info</h3>
+                <button class="btn m-2 btn-secondary">
+                    <h3>View URL</h3>
                 </button>
             </div>
         </div>
