@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, current_user, logout_user, login_required
 from rpmt import app, db, bcrypt
-from rpmt.forms import LoginForm, ProjectForm
+from rpmt.forms import LoginForm, ProjectForm, SearchForm
 from rpmt.models import User, Project, Author, Editor, AuthorProject, EditorProject
 
 # Home Page
@@ -16,8 +16,22 @@ def home():
 
 @app.get("/projects/")
 def project_list():
+    form = SearchForm()
     projects = Project.query.all()
-    return render_template("projectlist.html", data=projects, mode="View")
+    return render_template("projectlist.html", data=projects, mode="View", form=form)
+
+@app.post("/projects/")
+def search_projects():
+    form = SearchForm()
+    projects = Project.query
+    if form.title.data:
+        projects = projects.filter_by(title=form.title.data)
+
+    if projects.all() == []:
+        flash('Project not found', 'danger')
+        projects = Project.query.all()
+    return render_template("projectlist.html", data=projects, mode="View", form=form)
+
 @app.get("/projects/<int:paper_id>")
 def project_page(paper_id):
     project = Project.query.filter_by(id=paper_id).first()
@@ -36,6 +50,7 @@ def login():
         return redirect(url_for('home'))
     form = LoginForm()
     return render_template("login.html", form=form)
+
 @app.post("/login")
 def login_post():
     form = LoginForm()
@@ -81,6 +96,7 @@ def add_project():
     mode = "Adding a New Project"
     form = ProjectForm()
     return render_template("projectform.html", form=form, mode=mode)
+
 @app.post("/admin/add")
 @login_required
 def add_project_post():
@@ -150,16 +166,41 @@ def add_project_post():
 @app.get("/admin/delete/")
 @login_required
 def delete_project_list():
-    projects = Project.query.all()
-    return render_template("projectlist.html", data=projects, mode="Delete")
+    form = SearchForm()
+    if current_user.role == 'Chair':
+        projects = Project.query.all()
+    else:
+        projects = Project.query.filter_by(creator_id=current_user.id)
+    return render_template("projectlist.html", data=projects, mode="Delete", form=form)
+
+@app.post("/admin/delete/")
+@login_required
+def search_delete_projects():
+    form = SearchForm()
+    if current_user.role == 'Chair':
+        possible_projects = Project.query
+    else:
+        possible_projects = Project.query.filter_by(creator_id=current_user.id)
+    projects = possible_projects
+        
+    if form.title.data:
+        projects = projects.filter_by(title=form.title.data)
+        
+    if projects.all() == []:
+        flash('Project not found', 'danger')
+        projects = possible_projects
+    return render_template("projectlist.html", data=projects, mode="Delete", form=form)
 
 @app.get("/admin/delete/<int:paper_id>")
 @login_required
 def delete_project(paper_id):
     to_delete = Project.query.filter_by(id=paper_id).first()
-    db.session.delete(to_delete)
-    db.session.commit()
-    flash('Successfully deleted project', 'success')
+    if current_user.role == 'Chair' or current_user.id == to_delete.creator_id:
+        db.session.delete(to_delete)
+        db.session.commit()
+        flash('Successfully deleted project', 'success')
+    else:
+        flash('You do not have permission to delete this project', 'danger')
     return redirect(url_for('admin'))
 
 # Admin: Editing Projects
@@ -167,23 +208,50 @@ def delete_project(paper_id):
 @app.get("/admin/edit/")
 @login_required
 def edit_project_list():
-    projects = Project.query.all()
-    return render_template("projectlist.html", data=projects, mode="Edit")
+    form = SearchForm()
+    if current_user.role == 'Chair':
+        projects = Project.query.all()
+    else:
+        projects = Project.query.filter_by(creator_id=current_user.id)
+    return render_template("projectlist.html", data=projects, mode="Edit", form=form)
+
+@app.post("/admin/edit/")
+@login_required
+def search_edit_projects():
+    form = SearchForm()
+    if current_user.role == 'Chair':
+        possible_projects = Project.query
+    else:
+        possible_projects = Project.query.filter_by(creator_id=current_user.id)
+    projects = possible_projects
+        
+    if form.title.data:
+        projects = projects.filter_by(title=form.title.data)
+        
+    if projects.all() == []:
+        flash('Project not found', 'danger')
+        projects = possible_projects
+    return render_template("projectlist.html", data=projects, mode="Edit", form=form)
 
 @app.get("/admin/edit/<int:paper_id>")
 @login_required
 def edit_project(paper_id):
     project = Project.query.filter_by(id=paper_id).first()
-    mode = "Editing " + project.title
-    
-    authors_data = ', '.join([ap.author.name for ap in project.authors])
-    editors_data = ', '.join([ep.editor.name for ep in project.editors])
-    
-    form = ProjectForm(obj=project)
-    form.authors.data = authors_data
-    form.editors.data = editors_data
+    if current_user.role == 'Chair' or current_user.id == project.creator_id:
+        mode = "Editing " + project.title
+        
+        authors_data = ', '.join([ap.author.name for ap in project.authors])
+        editors_data = ', '.join([ep.editor.name for ep in project.editors])
+        
+        form = ProjectForm(obj=project)
+        form.authors.data = authors_data
+        form.editors.data = editors_data
 
-    return render_template("projectform.html", mode=mode, form=form)
+        return render_template("projectform.html", mode=mode, form=form)
+    else:
+        flash('You do not have permission to edit this project', 'danger')
+        return redirect(url_for('admin'))
+        
 @app.post("/admin/edit/<int:paper_id>")
 @login_required
 def edit_project_post(paper_id):

@@ -9,6 +9,14 @@ class LoginForm(FlaskForm):
                            validators=[DataRequired(), Length(max=64)])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+
+class SearchForm(FlaskForm):
+    title = StringField('Search Title',
+                        validators=[Optional(), Length(max=256)])
+    author = StringField('Search Author',
+                         validators=[Optional(), Length(max=128)])
+    submit = SubmitField('Search')
     
 class ProjectForm(FlaskForm):
     title = StringField('Title',
