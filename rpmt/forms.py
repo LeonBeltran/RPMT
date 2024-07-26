@@ -13,7 +13,7 @@ class RegisterForm(FlaskForm):
     confirm_password = StringField('Confirm Password',
                            validators=[DataRequired(), Length(max=64), EqualTo('password', message='Passwords must match')])
     role = SelectField('Role',
-                       choices=[('FACULTY', 'Faculty'), ('ADMIN', 'Admin'), ('CHAIR', 'Chair'), ('DEV', 'Dev')],
+                       choices=[('Faculty', 'Faculty'), ('Admin', 'Admin'), ('Chair', 'Chair'), ('Dev', 'Dev')],
                        validators=[DataRequired()])
     submit = SubmitField('Register')
 
