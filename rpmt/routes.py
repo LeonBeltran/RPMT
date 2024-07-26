@@ -92,7 +92,11 @@ def admin():
 @app.get("/admin/report")
 @login_required
 def report():
-    return render_template("report.html")
+    authors = Author.query.all()
+    author_data = []
+    for author in authors:
+        author_data.append(f"{author.name} has {len(author.projects)} project/s or publication/s")
+    return render_template("report.html", author_data=author_data)
 
 # Admin: Adding Projects
 # ----------------------------------------------------------------------------------------------
