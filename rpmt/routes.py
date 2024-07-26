@@ -3,6 +3,8 @@ from flask_login import login_user, current_user, logout_user, login_required
 from rpmt import app, db, bcrypt
 from rpmt.forms import LoginForm, ProjectForm, SearchForm
 from rpmt.models import User, Project, Author, Editor, AuthorProject, EditorProject
+import time
+import os
 
 # Home Page
 # ----------------------------------------------------------------------------------------------
@@ -107,6 +109,11 @@ def add_project():
     form = ProjectForm()
     return render_template("projectform.html", form=form, mode=mode)
 
+def get_filename(filename):
+    timestamp = int(time.time())
+    name, extension = os.path.splitext(filename)
+    return f"{name}_{timestamp}{extension}"
+
 @app.post("/admin/add")
 @login_required
 def add_project_post():
@@ -114,6 +121,21 @@ def add_project_post():
     form = ProjectForm()
     if form.validate_on_submit():
         try:
+            if form.publication_proof.data:
+                publication_proof_filename = get_filename(form.publication_proof.data.filename)
+            else:
+                publication_proof_filename = "none.png"
+            
+            if form.utilization_proof.data:
+                utilization_proof_filename = get_filename(form.utilization_proof.data.filename)
+            else:
+                utilization_proof_filename = "none.png"
+            
+            if form.pdf.data:
+                pdf_filename = get_filename(form.pdf.data.filename)
+            else:
+                pdf_filename = "none.pdf"
+                
             new_project = Project(
                 creator_id=current_user.id,
                 title=form.title.data,
@@ -134,8 +156,9 @@ def add_project_post():
                 ched_recognized=form.ched_recognized.data,
                 other_database=form.other_database.data,
                 citations=form.citations.data,
-                publication_proof=form.publication_proof.data if form.publication_proof.data else "none.png",
-                utilization_proof=form.utilization_proof.data if form.utilization_proof.data else "none.png"
+                publication_proof=publication_proof_filename,
+                utilization_proof=utilization_proof_filename,
+                pdf=pdf_filename
             )
             db.session.add(new_project)
             db.session.commit()
@@ -299,12 +322,20 @@ def edit_project_post(paper_id):
             if form.clear_publication_proof.data:
                 project.publication_proof = "none.png"
             elif form.publication_proof.data:
-                project.publication_proof = form.publication_proof.data 
+                publication_proof_filename = get_filename(form.publication_proof.data.filename)
+                project.publication_proof = publication_proof_filename
         
             if form.clear_utilization_proof.data:
                 project.utilization_proof = "none.png"
             elif form.utilization_proof.data:
-                project.utilization_proof = form.utilization_proof.data
+                utilization_proof_filename = get_filename(form.utilization_proof.data.filename)
+                project.utilization_proof = utilization_proof_filename
+                
+            if form.clear_pdf.data:
+                project.pdf = "none.pdf"
+            elif form.pdf:
+                pdf_filename = get_filename(form.pdf.data.filename)
+                project.pdf = pdf_filename
             
             AuthorProject.query.filter_by(project_id=project.id).delete()
             EditorProject.query.filter_by(project_id=project.id).delete()

@@ -8,7 +8,7 @@
         <h1 style="height: 100%; overflow-x: auto; white-space: nowrap; text-align: center;">{{ mode }}</h1>
     </div>
     <div style="width: 75%; height: 450px;" class="row p-3 mx-auto rounded-3 overflow-y-scroll bg-gradient border border-dark-subtle align-items-center justify-content-center">
-        <form action="#" method="POST">
+        <form action="#" method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div class="form-group mb-3">
                 {{ form.title(class="form-control", placeholder="Title") }}
@@ -92,7 +92,16 @@
                 {{ form.clear_utilization_proof(class="form-check-input") }}
                 {{ form.clear_utilization_proof.label(class="form-check-label") }}
             </div>
+            <div class="form-group mb-3">
+                {{ form.pdf.label(class="form-label") }}
+                {{ form.pdf(class="form-control") }}
+            </div>
+            <div class="form-check mb-3" style="text-align: left;">
+                {{ form.clear_pdf(class="form-check-input") }}
+                {{ form.clear_pdf.label(class="form-check-label") }}
+            </div>
             {{ form.submit(class="btn mt-3 mb-5 btn-warning") }}
+
         </form>
     </div>
 </div>

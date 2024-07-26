@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, BooleanField, DateField, SubmitField, TextAreaField, SelectField, FileField
 from wtforms.validators import DataRequired, Length, Optional, InputRequired, NumberRange
+from flask_wtf.file import FileAllowed
 
 class LoginForm(FlaskForm): 
     username = StringField('Username',
@@ -54,11 +55,14 @@ class ProjectForm(FlaskForm):
     other_database = StringField('Other Database',
                                  validators=[Optional(), Length(max=128)])
     publication_proof = FileField('Publication Proof',
-                                    validators=[Optional()])
+                                    validators=[Optional(), FileAllowed(['png', 'jpg', 'jpeg'])])
     clear_publication_proof = BooleanField('Remove Publication Proof Image (Ignore if new project or adding new image)')
     citations = IntegerField('Citations',
                              validators=[InputRequired(), NumberRange(min=0)])
     utilization_proof = FileField('Utilization Proof',
-                                    validators=[Optional()])
+                                    validators=[Optional(), FileAllowed(['png', 'jpg', 'jpeg'])])
     clear_utilization_proof = BooleanField('Remove Utilization Proof Image (Ignore if new project or adding new image)')
+    pdf = FileField('PDF File of Project',
+                    validators=[Optional(), FileAllowed(['pdf'])])
+    clear_pdf = BooleanField('Remove PDF (Ignore if new project or adding new PDF)')
     submit = SubmitField('Submit')
