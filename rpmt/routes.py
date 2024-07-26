@@ -138,7 +138,7 @@ def add_project_post():
             if form.pdf.data:
                 pdf_filename = get_filename(form.pdf.data.filename)
                 pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename)
-                form.publication_proof.data.save(pdf_path)
+                form.pdf.data.save(pdf_path)
             else:
                 pdf_filename = "none.pdf"
                 
@@ -206,7 +206,7 @@ def add_project_post():
 @login_required
 def delete_project_list():
     form = SearchForm()
-    if current_user.role == 'Chair':
+    if current_user.role == 'Chair' or current_user.role == 'Admin':
         projects = Project.query.all()
     else:
         projects = Project.query.filter_by(creator_id=current_user.id)
@@ -217,7 +217,7 @@ def delete_project_list():
 def search_delete_projects():
     form = SearchForm()
     
-    if current_user.role == 'Chair':
+    if current_user.role == 'Chair' or current_user.role == 'Admin':
         possible_projects = Project.query
     else:
         possible_projects = Project.query.filter_by(creator_id=current_user.id)
@@ -247,7 +247,18 @@ def delete_file(filename):
 @login_required
 def delete_project(paper_id):
     to_delete = Project.query.filter_by(id=paper_id).first()
-    if current_user.role == 'Chair' or current_user.id == to_delete.creator_id:
+    if current_user.role == 'Chair' or current_user.role == 'Admin' or current_user.id == to_delete.creator_id:
+        pub_filename = to_delete.publication_proof
+        util_filename = to_delete.utilization_proof
+        pdf_filename = to_delete.pdf
+        
+        if pub_filename != 'none.png':
+            delete_file(pub_filename)
+        if util_filename != 'none.png':
+            delete_file(util_filename)
+        if pdf_filename != 'none.pdf':
+            delete_file(pdf_filename)
+        
         db.session.delete(to_delete)
         db.session.commit()
         flash('Successfully deleted project', 'success')
@@ -261,7 +272,7 @@ def delete_project(paper_id):
 @login_required
 def edit_project_list():
     form = SearchForm()
-    if current_user.role == 'Chair':
+    if current_user.role == 'Chair' or current_user.role == 'Admin':
         projects = Project.query.all()
     else:
         projects = Project.query.filter_by(creator_id=current_user.id)
@@ -271,7 +282,7 @@ def edit_project_list():
 @login_required
 def search_edit_projects():
     form = SearchForm()
-    if current_user.role == 'Chair':
+    if current_user.role == 'Chair' or current_user.role == 'Admin':
         possible_projects = Project.query
     else:
         possible_projects = Project.query.filter_by(creator_id=current_user.id)
@@ -290,7 +301,7 @@ def search_edit_projects():
 @login_required
 def edit_project(paper_id):
     project = Project.query.filter_by(id=paper_id).first()
-    if current_user.role == 'Chair' or current_user.id == project.creator_id:
+    if current_user.role == 'Chair' or current_user.role == 'Admin' or current_user.id == project.creator_id:
         mode = "Editing " + project.title
         
         authors_data = ', '.join([ap.author.name for ap in project.authors])
@@ -333,23 +344,45 @@ def edit_project_post(paper_id):
             project.citations = form.citations.data
             
             if form.clear_publication_proof.data:
-                project.publication_proof = "none.png"
+                pub_filename = project.publication_proof
+                if pub_filename != 'none.png':
+                    delete_file(pub_filename)
+                    project.publication_proof = "none.png"
             elif form.publication_proof.data:
-                path = project.publication_proof
-                
+                pub_filename = project.publication_proof
+                if pub_filename != 'none.png':
+                    delete_file(pub_filename)
                 publication_proof_filename = get_filename(form.publication_proof.data.filename)
+                publication_proof_path = os.path.join(app.config['UPLOAD_FOLDER'], publication_proof_filename)
+                form.publication_proof.data.save(publication_proof_path)
                 project.publication_proof = publication_proof_filename
         
             if form.clear_utilization_proof.data:
-                project.utilization_proof = "none.png"
+                util_filename = project.utilization_proof
+                if util_filename != 'none.png':
+                    delete_file(util_filename)
+                    project.utilization_proof = "none.png"
             elif form.utilization_proof.data:
+                util_filename = project.utilization_proof
+                if util_filename != 'none.png':
+                    delete_file(util_filename)
                 utilization_proof_filename = get_filename(form.utilization_proof.data.filename)
+                utilization_proof_path = os.path.join(app.config['UPLOAD_FOLDER'], utilization_proof_filename)
+                form.utilization_proof.data.save(utilization_proof_path)
                 project.utilization_proof = utilization_proof_filename
                 
             if form.clear_pdf.data:
-                project.pdf = "none.pdf"
-            elif form.pdf:
+                pdf_filename = project.pdf
+                if pdf_filename != 'none.pdf':
+                    delete_file(pdf_filename)
+                    project.pdf = "none.pdf"
+            elif form.pdf.data:
+                pdf_filename = project.pdf
+                if pdf_filename != 'none.pdf':
+                    delete_file(pdf_filename)
                 pdf_filename = get_filename(form.pdf.data.filename)
+                pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename)
+                form.pdf.data.save(pdf_path)
                 project.pdf = pdf_filename
             
             AuthorProject.query.filter_by(project_id=project.id).delete()
