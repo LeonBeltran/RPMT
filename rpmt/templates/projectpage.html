@@ -51,8 +51,8 @@
                 <p>{{ project.other_database }}</p>
                 <h4>No. of Citations</h4>
                 <p>{{ project.citations }}</p>
-                <button type="button" class="btn btn-secondary">Proof of Publication</button>
-                <button type="button" class="btn btn-secondary">Proof of Utilization</button>
+                <a href="{{ url_for('download_file', filename=project.publication_proof) }}" class="btn btn-secondary">Proof of Publication</a>
+                <a href="{{ url_for('download_file', filename=project.utilization_proof) }}" class="btn btn-secondary">Proof of Utilization</a>
             </div>
         </div>
         <div style="text-align: left;" class="col m-3">
@@ -66,9 +66,9 @@
             <div class="row rounded-3 p-3 bg-gradient border border-dark-subtle align-items-center justify-content-center">
                 <h1>Project Links</h1>
                 <br>
-                <button class="btn m-2 btn-secondary">
+                <a href="{{ url_for('download_file', filename=project.pdf) }}" class="btn m-2 btn-secondary">
                     <h3>Download PDF</h3>
-                </button>
+                </a>
                 <button class="btn m-2 btn-secondary">
                     <h3>View URL</h3>
                 </button>

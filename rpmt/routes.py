@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, send_from_directory, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from rpmt import app, db, bcrypt
 from rpmt.forms import LoginForm, ProjectForm, SearchForm
@@ -49,6 +49,13 @@ def project_page(paper_id):
     editors_data = ', '.join([ep.editor.name for ep in project.editors])
     return render_template("projectpage.html", project=project, creator=creator_name, authors=authors_data, editors=editors_data)
 
+@app.get('/download/<filename>')
+def download_file(filename):
+    try:
+        return send_from_directory(app.config['DOWNLOAD_FOLDER'], filename)
+    except FileNotFoundError:
+        abort(404)
+
 # Admin: Login Page
 # ----------------------------------------------------------------------------------------------
 @app.get("/login")
@@ -87,6 +94,13 @@ def logout():
 @app.get("/admin/")
 @login_required
 def admin():
+    for author in Author.query.all():
+        if author.projects == []:
+            db.session.delete(author)
+    for editor in Editor.query.all():
+        if editor.projects == []:
+            db.session.delete(editor)
+    db.session.commit()
     return render_template("admin.html")
 
 # Admin: Generate Projects Report
