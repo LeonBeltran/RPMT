@@ -25,7 +25,8 @@ def search_projects():
     form = SearchForm()
     projects = Project.query
     if form.title.data:
-        projects = projects.filter_by(title=form.title.data)
+        search_term = f"%{form.title.data}%"
+        projects = projects.filter(Project.title.like(search_term))
 
     if projects.all() == []:
         flash('Project not found', 'danger')
@@ -184,7 +185,8 @@ def search_delete_projects():
     projects = possible_projects
         
     if form.title.data:
-        projects = projects.filter_by(title=form.title.data)
+        search_term = f"%{form.title.data}%"
+        projects = projects.filter(Project.title.like(search_term))
         
     if projects.all() == []:
         flash('Project not found', 'danger')
@@ -226,7 +228,8 @@ def search_edit_projects():
     projects = possible_projects
         
     if form.title.data:
-        projects = projects.filter_by(title=form.title.data)
+        search_term = f"%{form.title.data}%"
+        projects = projects.filter(Project.title.like(search_term))
         
     if projects.all() == []:
         flash('Project not found', 'danger')
