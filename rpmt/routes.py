@@ -123,16 +123,22 @@ def add_project_post():
         try:
             if form.publication_proof.data:
                 publication_proof_filename = get_filename(form.publication_proof.data.filename)
+                publication_proof_path = os.path.join(app.config['UPLOAD_FOLDER'], publication_proof_filename)
+                form.publication_proof.data.save(publication_proof_path)
             else:
                 publication_proof_filename = "none.png"
             
             if form.utilization_proof.data:
                 utilization_proof_filename = get_filename(form.utilization_proof.data.filename)
+                utilization_proof_path = os.path.join(app.config['UPLOAD_FOLDER'], utilization_proof_filename)
+                form.utilization_proof.data.save(utilization_proof_path)
             else:
                 utilization_proof_filename = "none.png"
             
             if form.pdf.data:
                 pdf_filename = get_filename(form.pdf.data.filename)
+                pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename)
+                form.publication_proof.data.save(pdf_path)
             else:
                 pdf_filename = "none.pdf"
                 
@@ -230,6 +236,13 @@ def search_delete_projects():
         projects = possible_projects
     return render_template("projectlist.html", data=projects, mode="Delete", form=form)
 
+def delete_file(filename):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        return True
+    return False
+
 @app.get("/admin/delete/<int:paper_id>")
 @login_required
 def delete_project(paper_id):
@@ -291,7 +304,7 @@ def edit_project(paper_id):
     else:
         flash('You do not have permission to edit this project', 'danger')
         return redirect(url_for('admin'))
-        
+    
 @app.post("/admin/edit/<int:paper_id>")
 @login_required
 def edit_project_post(paper_id):
@@ -322,6 +335,8 @@ def edit_project_post(paper_id):
             if form.clear_publication_proof.data:
                 project.publication_proof = "none.png"
             elif form.publication_proof.data:
+                path = project.publication_proof
+                
                 publication_proof_filename = get_filename(form.publication_proof.data.filename)
                 project.publication_proof = publication_proof_filename
         
