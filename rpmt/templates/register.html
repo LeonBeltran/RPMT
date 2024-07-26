@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - RPMT{% endblock %}
+
+{% block content %}
+<div class="container align-items-center justify-content-center">
+    <div class="row mb-3 mx-auto text-center">
+        <h1>Register</h1>
+    </div>
+    <div style="width: 50%; height: 450px;" class="row p-3 mx-auto rounded-3 overflow-y-scroll bg-gradient border border-dark-subtle align-items-center justify-content-center">
+        <h1 class="text-warning mt-5 mb-3 text-center">RPMT</h1>
+        <form action="#" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group mb-3">
+                {{ form.username(class="form-control", placeholder="Username") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.email(class="form-control", placeholder="Email Address") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.password(type="password", class="form-control", placeholder="Password") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.confirm_password(type="password", class="form-control", placeholder="Confirm Password") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.role.label(class="form-label") }}
+                {{ form.role(class="form-select w-25") }}
+            </div>
+            <p class="text-center">Please contact the site administrator if you forgot your login credentials.</p>
+            {{ form.submit(class="btn mt-3 mb-5 btn-warning") }}
+        </form>
+    </div>
+</div>
+{% endblock %}

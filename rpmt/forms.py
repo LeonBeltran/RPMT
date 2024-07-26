@@ -1,7 +1,21 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, BooleanField, DateField, SubmitField, TextAreaField, SelectField, FileField
-from wtforms.validators import DataRequired, Length, Optional, InputRequired, NumberRange
+from wtforms import StringField, IntegerField, BooleanField, DateField, SubmitField, TextAreaField, SelectField, FileField, EmailField
+from wtforms.validators import DataRequired, Length, Optional, InputRequired, NumberRange, EqualTo
 from flask_wtf.file import FileAllowed
+
+class RegisterForm(FlaskForm):
+    username = StringField('Username',
+                           validators=[DataRequired(), Length(max=128)])
+    email = EmailField('Email Address',
+                       validators=[DataRequired(), Length(max=64)])
+    password = StringField('Password',
+                           validators=[DataRequired(), Length(max=64)])
+    confirm_password = StringField('Confirm Password',
+                           validators=[DataRequired(), Length(max=64), EqualTo('password', message='Passwords must match')])
+    role = SelectField('Role',
+                       choices=[('FACULTY', 'Faculty'), ('ADMIN', 'Admin'), ('CHAIR', 'Chair'), ('DEV', 'Dev')],
+                       validators=[DataRequired()])
+    submit = SubmitField('Register')
 
 class LoginForm(FlaskForm): 
     username = StringField('Username',
@@ -10,7 +24,6 @@ class LoginForm(FlaskForm):
                            validators=[DataRequired(), Length(max=64)])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
-
 
 class SearchForm(FlaskForm):
     title = StringField('Search Title',

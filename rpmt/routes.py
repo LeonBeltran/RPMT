@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, send_from_directory, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from rpmt import app, db, bcrypt
-from rpmt.forms import LoginForm, ProjectForm, SearchForm
+from rpmt.forms import LoginForm, ProjectForm, SearchForm, RegisterForm
 from rpmt.models import User, Project, Author, Editor, AuthorProject, EditorProject
 import time
 import os
@@ -56,6 +56,43 @@ def download_file(filename):
     except FileNotFoundError:
         abort(404)
 
+# Admin: Register Page
+# ----------------------------------------------------------------------------------------------
+@app.get("/register")
+def register():
+    if current_user.is_authenticated:
+        flash(f'Already logged in as {current_user.username}', 'warning')
+        return redirect(url_for('home'))
+    form = RegisterForm()
+    return render_template("register.html", form=form)
+
+@app.post("/register")
+def register_post():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
+        role = form.role.data
+
+        user = User.query.filter_by(username=username).first()
+        if user:
+            flash('Username already exists. Please choose a different one.', 'danger')
+            return render_template("register.html", form=form)
+        
+        hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
+
+        user = User(username=username, email=email, password=hashed_password, role=role)
+
+        db.session.add(user)
+        db.session.commit()
+        
+        flash('User Registered', 'success')
+        return redirect(url_for('login'))  # Redirect to the login page or any other page
+    else:
+        flash('Registration unsuccessful, please check your credentials.', 'danger')
+    return render_template("register.html", form=form)
+
 # Admin: Login Page
 # ----------------------------------------------------------------------------------------------
 @app.get("/login")
@@ -86,7 +123,7 @@ def login_post():
 @login_required
 def logout():
     logout_user()
-    flash(f'Logged out successfully', 'success')
+    flash(f'Logged out successfully.', 'success')
     return redirect(url_for('home'))
 
 # Admin: Admin Area
@@ -113,6 +150,28 @@ def report():
     for author in authors:
         author_data.append(f"{author.name} has {len(author.projects)} project/s or publication/s")
     return render_template("report.html", author_data=author_data)
+
+# Admin: Manage Account
+# ----------------------------------------------------------------------------------------------
+@app.get("/account/")
+@login_required
+def manage_account():
+    user = User.query.filter_by(username=current_user.username).first()
+    return render_template("userpage.html", user=user)
+
+@app.get("/account/delete")
+@login_required
+def delete_user():
+    user = User.query.filter_by(username=current_user.username).first()
+    if user.projects == []:
+        logout_user()
+        db.session.delete(user)
+        db.session.commit()
+        flash('User Deleted', 'danger')
+        return redirect(url_for('home'))
+    else: 
+        flash('Please remove all projects before deleting this user.', 'warning')
+        return redirect(url_for('admin'))
 
 # Admin: Adding Projects
 # ----------------------------------------------------------------------------------------------

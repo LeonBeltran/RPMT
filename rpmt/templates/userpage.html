@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Projects Report - RPMT{% endblock %}
+
+{% block content %}
+<div class="container text-center align-items-center justify-content-center">
+    <div class="row mb-3 d-flex align-items-center justify-content-center">
+        <div class="col-md-auto">
+            <h1>Welcome {{ user.username }}!</h1>
+        </div>
+    </div>
+    <div style="width: 50%; height: 100%;" class="row p-3 mx-auto rounded-3 bg-gradient border border-dark-subtle align-items-center justify-content-center">
+        <h4 class="mb-3">Email Address: {{ user.email }}</h4>
+        <h4 class="mb-3">Role: {{ user.role }}</h4>
+        <a href="{{ url_for('delete_user') }}" class="btn mb-3 btn-danger w-25">Delete Account</a>
+    </div>
+</div>
+{% endblock %}
