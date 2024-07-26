@@ -24,9 +24,14 @@ def project_list():
 def search_projects():
     form = SearchForm()
     projects = Project.query
+    
     if form.title.data:
         search_term = f"%{form.title.data}%"
         projects = projects.filter(Project.title.like(search_term))
+        
+    if form.author.data:
+        author_search_term = f"%{form.author.data}%"
+        projects = projects.join(AuthorProject).join(Author).filter(Author.name.like(author_search_term))
 
     if projects.all() == []:
         flash('Project not found', 'danger')
@@ -178,6 +183,7 @@ def delete_project_list():
 @login_required
 def search_delete_projects():
     form = SearchForm()
+    
     if current_user.role == 'Chair':
         possible_projects = Project.query
     else:
@@ -187,6 +193,10 @@ def search_delete_projects():
     if form.title.data:
         search_term = f"%{form.title.data}%"
         projects = projects.filter(Project.title.like(search_term))
+        
+    if form.author.data:
+        author_search_term = f"%{form.author.data}%"
+        projects = projects.join(AuthorProject).join(Author).filter(Author.name.like(author_search_term))
         
     if projects.all() == []:
         flash('Project not found', 'danger')
