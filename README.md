@@ -19,11 +19,5 @@ CS 195 Internship Project for MY 2024 under Department of Industrial Engineering
 6. Open http://127.0.0.1:5000 to view the web application.
 
 ## User Management
-### Adding Users
-```python3 add_user.py [USERNAME] [EMAIL] [PASSWORD] [ROLE]```
-
 ### Deleting Users
 ```python3 delete_user.py [USERNAME]```
-
-### View All Users
-```python3 all_users.py```
