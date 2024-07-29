@@ -8,5 +8,4 @@ uploads
 migrations
 _internal
 build
-dist
-RPMT.spec
+db.sqlite3
