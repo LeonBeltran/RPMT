@@ -27,3 +27,4 @@ CS 195 Internship Project for MY 2024 under Department of Industrial Engineering
 ## User Management
 ### Deleting Users
 ```python3 delete_user.py [USERNAME]```
+- This is for localhost runs only
