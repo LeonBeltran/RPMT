@@ -3,7 +3,7 @@ from wtforms import StringField, IntegerField, BooleanField, DateField, SubmitFi
 from wtforms.validators import DataRequired, Length, Optional, InputRequired, NumberRange, EqualTo
 from flask_wtf.file import FileAllowed
 
-class RegisterForm(FlaskForm):
+class UserForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(), Length(max=128)])
     email = EmailField('Email Address',
@@ -12,10 +12,14 @@ class RegisterForm(FlaskForm):
                            validators=[DataRequired(), Length(max=64)])
     confirm_password = StringField('Confirm Password',
                            validators=[DataRequired(), Length(max=64), EqualTo('password', message='Passwords must match')])
+    new_password = StringField('New Password',
+                           validators=[Optional(), Length(max=64)])
+    confirm_new_password = StringField('Confirm New Password',
+                           validators=[Optional(), Length(max=64), EqualTo('new_password', message='Passwords must match')])
     role = SelectField('Role',
                        choices=[('Faculty', 'Faculty'), ('Admin', 'Admin'), ('Chair', 'Chair'), ('Dev', 'Dev')],
                        validators=[DataRequired()])
-    submit = SubmitField('Register')
+    submit = SubmitField('Submit')
 
 class LoginForm(FlaskForm): 
     username = StringField('Username',

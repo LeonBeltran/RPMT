@@ -1,7 +1,7 @@
-from flask import render_template, flash, redirect, url_for, request, send_from_directory, abort
+from flask import render_template, flash, redirect, url_for, request, send_from_directory
 from flask_login import login_user, current_user, logout_user, login_required
 from rpmt import app, db, bcrypt
-from rpmt.forms import LoginForm, ProjectForm, SearchForm, RegisterForm
+from rpmt.forms import LoginForm, ProjectForm, SearchForm, UserForm
 from rpmt.models import User, Project, Author, Editor, AuthorProject, EditorProject
 import time
 import os
@@ -51,10 +51,12 @@ def project_page(paper_id):
 
 @app.get('/download/<filename>')
 def download_file(filename):
-    try:
+    name, _ = os.path.splitext(filename)
+    if name == "none":
+        flash('File does not exist.', 'danger')
+        return redirect(url_for('project_list'))
+    else:
         return send_from_directory(app.config['DOWNLOAD_FOLDER'], filename)
-    except FileNotFoundError:
-        abort(404)
 
 # Admin: Register Page
 # ----------------------------------------------------------------------------------------------
@@ -63,12 +65,12 @@ def register():
     if current_user.is_authenticated:
         flash(f'Already logged in as {current_user.username}', 'warning')
         return redirect(url_for('home'))
-    form = RegisterForm()
+    form = UserForm()
     return render_template("register.html", form=form)
 
 @app.post("/register")
 def register_post():
-    form = RegisterForm()
+    form = UserForm()
     if form.validate_on_submit():
         username = form.username.data
         email = form.email.data
@@ -157,7 +159,35 @@ def report():
 @login_required
 def manage_account():
     user = User.query.filter_by(username=current_user.username).first()
-    return render_template("userpage.html", user=user)
+    form = UserForm(
+        username=user.username,
+        email=user.email,
+        role=user.role
+    )
+    return render_template("userpage.html", user=user, form=form)
+
+@app.post("/account/")
+def edit_credentials():
+    user = User.query.filter_by(username=current_user.username).first()
+    form = UserForm()
+    if form.validate_on_submit():
+        try:
+            if bcrypt.check_password_hash(user.password, form.password.data):
+                user.username = form.username.data
+                user.email = form.email.data
+                if form.new_password.data:
+                    user.password = bcrypt.generate_password_hash(form.new_password.data).decode("utf-8")
+                user.role = form.role.data
+                db.session.commit()
+                flash('User credentials updated successfully', 'success')
+            else:
+                flash('Please input your old password', 'warning')
+            return redirect(url_for('manage_account'))
+                
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred: {str(e)}', 'danger')
+            
 
 @app.get("/account/delete")
 @login_required
