@@ -4,6 +4,12 @@ CS 195 Internship Project for MY 2024 under Department of Industrial Engineering
 ## Start Server
 * Instructions are in MACOS format
 
+### RPMT.exe
+1. Download zip file in latest release
+2. Unzip the file
+3. Run the exe file
+4. Open ```http://127.0.0.1:5000``` in your browser or open the link shown in the terminal
+
 ### Localhost
 1. Clone the repository.
 ```git clone [REPO_URL]```
