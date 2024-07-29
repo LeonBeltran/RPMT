@@ -11,12 +11,19 @@ import os
 
 # Setup
 # ----------------------------------------------------------------------------------------------
-load_dotenv()
+if getattr(sys, 'frozen', False):
+    base_path = Path(sys._MEIPASS)
+else:
+    base_path = Path(__file__).parent
+dotenv_path = base_path / '.env'
+load_dotenv(dotenv_path)
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
-app.config['UPLOAD_FOLDER'] = 'rpmt/uploads/'
-app.config['DOWNLOAD_FOLDER'] = 'uploads/'
+UPLOAD_FOLDER = os.path.join(base_path, 'uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['DOWNLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
