@@ -9,3 +9,4 @@ migrations
 _internal
 build
 db.sqlite3
+dist
