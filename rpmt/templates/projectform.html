@@ -10,40 +10,52 @@
     <div style="width: 75%; height: 450px;" class="row p-3 mx-auto rounded-3 overflow-y-scroll bg-gradient border border-dark-subtle align-items-center justify-content-center">
         <form action="#" method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.title.label(class="form-label") }}
                 {{ form.title(class="form-control", placeholder="Title") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.abstract.label(class="form-label") }}
                 {{ form.abstract(class="form-control", placeholder="Abstract", rows="5") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.authors.label(class="form-label") }}
                 {{ form.authors(class="form-control", placeholder="Authors (First Name M.I. Last Name, First Name M.I. Last Name, etc.)") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.type.label(class="form-label") }}
                 {{ form.type(class="form-control w-25", placeholder="Publication Type") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.date_published.label(class="form-label") }}
                 {{ form.date_published(class="form-control w-25") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.publication_name.label(class="form-label") }}
                 {{ form.publication_name(class="form-control", placeholder="Journal/Book/Publication Conference Name") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.publisher.label(class="form-label") }}
                 {{ form.publisher(class="form-control", placeholder="Publisher Name") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.publisher_type.label(class="form-label") }}
                 {{ form.publisher_type(class="form-control w-25", placeholder="Publisher Type") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.publisher_location.label(class="form-label") }}
                 {{ form.publisher_location(class="form-control w-25", placeholder="Publisher Location") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.editors.label(class="form-label") }}
                 {{ form.editors(class="form-control", placeholder="Editors (First Name M.I. Last Name, First Name M.I. Last Name, etc.)") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.vol_issue_no.label(class="form-label") }}
                 {{ form.vol_issue_no(class="form-control w-25", placeholder="Volume & Issue No.") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.doi_url.label(class="form-label") }}
                 {{ form.doi_url(class="form-control", placeholder="DOI or URL") }}
             </div>
             <div class="form-group mb-3">
@@ -70,10 +82,12 @@
                 {{ form.ched_recognized(class="form-check-input") }}
                 {{ form.ched_recognized.label(class="form-check-label") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.other_database.label(class="form-label") }}
                 {{ form.other_database(class="form-control", placeholder="Other Reputable Collection/Database") }}
             </div>
-            <div class="form-group mb-3">
+            <div class="form-group mb-3" style="text-align: left;">
+                {{ form.citations.label(class="form-label") }}
                 {{ form.citations(class="form-control w-25", placeholder="No. of Citations") }}
             </div>
             <div class="form-group mb-3">

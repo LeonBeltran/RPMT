@@ -70,9 +70,9 @@ class ProjectForm(FlaskForm):
     pubmed_medline = BooleanField('PubMed/Medline')
     ched_recognized = BooleanField('CHED Recognized')
     other_database = StringField('Other Database',
-                                 validators=[Optional(), Length(max=128)])
+                                 validators=[DataRequired(), Length(max=128)])
     publication_proof = FileField('Publication Proof',
-                                    validators=[Optional(), FileAllowed(['png', 'jpg', 'jpeg'])])
+                                    validators=[DataRequired(), FileAllowed(['png', 'jpg', 'jpeg'])])
     clear_publication_proof = BooleanField('Remove Publication Proof Image (Ignore if new project or adding new image)')
     citations = IntegerField('Citations',
                              validators=[InputRequired(), NumberRange(min=0)])
