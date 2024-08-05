@@ -30,6 +30,8 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Database
 # ----------------------------------------------------------------------------------------------
+# Where the database file is located
+# Can be online to have online syncing
 DATABASE_URI = "sqlite:///" + str(os.path.join(base_path, 'db.sqlite3'))
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

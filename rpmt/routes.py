@@ -15,7 +15,6 @@ def home():
 
 # Projects Page
 # ----------------------------------------------------------------------------------------------
-
 @app.get("/projects/")
 def project_list():
     form = SearchForm()
@@ -110,6 +109,8 @@ def login_post():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
+        
+        # Login logic (checking username-password pair)
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             flash(f'Logged in as {user.username}', 'success')
@@ -133,6 +134,7 @@ def logout():
 @app.get("/admin/")
 @login_required
 def admin():
+    # Check author and editor list to ensure no empty authors/editors
     for author in Author.query.all():
         if author.projects == []:
             db.session.delete(author)
@@ -147,6 +149,7 @@ def admin():
 @app.get("/admin/report")
 @login_required
 def report():
+    # Report based on authors found
     authors = Author.query.all()
     author_data = []
     for author in authors:
@@ -200,6 +203,7 @@ def delete_user():
         flash('User Deleted', 'danger')
         return redirect(url_for('home'))
     else: 
+        # Prevent blank creator in projects
         flash('Please remove all projects before deleting this user.', 'warning')
         return redirect(url_for('admin'))
 
@@ -212,6 +216,7 @@ def add_project():
     form = ProjectForm()
     return render_template("projectform.html", form=form, mode=mode)
 
+# Function to append timestamp to filename to make unique filenames
 def get_filename(filename):
     timestamp = int(time.time())
     name, extension = os.path.splitext(filename)
@@ -224,6 +229,7 @@ def add_project_post():
     form = ProjectForm()
     if form.validate_on_submit():
         try:
+            # Check for file uploads
             if form.publication_proof.data:
                 publication_proof_filename = get_filename(form.publication_proof.data.filename)
                 publication_proof_path = os.path.join(app.config['UPLOAD_FOLDER'], publication_proof_filename)
@@ -245,6 +251,7 @@ def add_project_post():
             else:
                 pdf_filename = "none.pdf"
                 
+            # Make new project instance
             new_project = Project(
                 creator_id=current_user.id,
                 title=form.title.data,
@@ -272,6 +279,7 @@ def add_project_post():
             db.session.add(new_project)
             db.session.commit()
             
+            # Add author and editor relationships
             authors_data = form.authors.data.split(', ')
             for author_name in authors_data:
                 author = Author.query.filter_by(name=author_name).first()
@@ -309,8 +317,10 @@ def add_project_post():
 @login_required
 def delete_project_list():
     form = SearchForm()
+    # Dept. Chair and Admin users may delete any added project
     if current_user.role == 'Chair' or current_user.role == 'Admin':
         projects = Project.query.all()
+    # Faculty can delete projects they added
     else:
         projects = Project.query.filter_by(creator_id=current_user.id)
     return render_template("projectlist.html", data=projects, mode="Delete", form=form)
@@ -339,6 +349,7 @@ def search_delete_projects():
         projects = possible_projects
     return render_template("projectlist.html", data=projects, mode="Delete", form=form)
 
+# Function to delete a file given filename in the upload folder
 def delete_file(filename):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     if os.path.exists(file_path):
@@ -350,11 +361,13 @@ def delete_file(filename):
 @login_required
 def delete_project(paper_id):
     to_delete = Project.query.filter_by(id=paper_id).first()
+    # Checking for valid user asking to delete
     if current_user.role == 'Chair' or current_user.role == 'Admin' or current_user.id == to_delete.creator_id:
         pub_filename = to_delete.publication_proof
         util_filename = to_delete.utilization_proof
         pdf_filename = to_delete.pdf
         
+        # Delete existing files for project
         if pub_filename != 'none.png':
             delete_file(pub_filename)
         if util_filename != 'none.png':
@@ -375,8 +388,10 @@ def delete_project(paper_id):
 @login_required
 def edit_project_list():
     form = SearchForm()
+    # Dept. Chair and Admin users can edit all added projects
     if current_user.role == 'Chair' or current_user.role == 'Admin':
         projects = Project.query.all()
+    # Faculty can access their added projects
     else:
         projects = Project.query.filter_by(creator_id=current_user.id)
     return render_template("projectlist.html", data=projects, mode="Edit", form=form)
