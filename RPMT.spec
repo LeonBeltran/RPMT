@@ -5,11 +5,7 @@ a = Analysis(
     ['app.py'],
     pathex=[],
     binaries=[],
-    datas=[
-        ('rpmt/uploads', 'rpmt/uploads'),
-        ('rpmt/templates', 'rpmt/templates'),
-        ('rpmt/.env', '.'),
-        ('rpmt/db.sqlite3', '.')],
+    datas=[('rpmt/uploads', 'rpmt/uploads'), ('rpmt/templates', 'rpmt/templates'), ('rpmt/.env', '.'), ('rpmt/db.sqlite3', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

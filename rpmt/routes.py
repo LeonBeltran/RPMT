@@ -1,10 +1,11 @@
-from flask import render_template, flash, redirect, url_for, request, send_from_directory
+from flask import render_template, flash, redirect, url_for, request, Response
 from flask_login import login_user, current_user, logout_user, login_required
-from rpmt import app, db, bcrypt
+from rpmt import app, db, bcrypt, supabase, upload_file, delete_file, get_file_url
 from rpmt.forms import LoginForm, ProjectForm, SearchForm, UserForm
 from rpmt.models import User, Project, Author, Editor, AuthorProject, EditorProject
 import time
 import os
+import requests
 
 # Home Page
 # ----------------------------------------------------------------------------------------------
@@ -55,7 +56,25 @@ def download_file(filename):
         flash('File does not exist.', 'danger')
         return redirect(url_for('project_list'))
     else:
-        return send_from_directory(app.config['DOWNLOAD_FOLDER'], filename)
+        try:
+            # Use Supabase client to get a signed URL
+            url = get_file_url(filename)
+
+            # Fetch the file from the signed URL
+            file_response = requests.get(url)
+            
+            if file_response.status_code == 200:
+                return Response(
+                    file_response.content,
+                    mimetype=file_response.headers['Content-Type'],
+                    headers={"Content-Disposition": f"attachment;filename={filename}"}
+                )
+            else:
+                flash('Failed to download file.', 'danger')
+                return redirect(url_for('project_list'))
+        except Exception as e:
+            flash(f'An error occurred: {str(e)}', 'danger')
+            return redirect(url_for('project_list'))
 
 # Admin: Register Page
 # ----------------------------------------------------------------------------------------------
@@ -232,22 +251,19 @@ def add_project_post():
             # Check for file uploads
             if form.publication_proof.data:
                 publication_proof_filename = get_filename(form.publication_proof.data.filename)
-                publication_proof_path = os.path.join(app.config['UPLOAD_FOLDER'], publication_proof_filename)
-                form.publication_proof.data.save(publication_proof_path)
+                upload_file(publication_proof_filename, form.publication_proof.data)
             else:
                 publication_proof_filename = "none.png"
             
             if form.utilization_proof.data:
                 utilization_proof_filename = get_filename(form.utilization_proof.data.filename)
-                utilization_proof_path = os.path.join(app.config['UPLOAD_FOLDER'], utilization_proof_filename)
-                form.utilization_proof.data.save(utilization_proof_path)
+                upload_file(utilization_proof_filename, form.utilization_proof.data)
             else:
                 utilization_proof_filename = "none.png"
             
             if form.pdf.data:
                 pdf_filename = get_filename(form.pdf.data.filename)
-                pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename)
-                form.pdf.data.save(pdf_path)
+                upload_file(pdf_filename, form.pdf.data)
             else:
                 pdf_filename = "none.pdf"
                 
@@ -349,14 +365,6 @@ def search_delete_projects():
         projects = possible_projects
     return render_template("projectlist.html", data=projects, mode="Delete", form=form)
 
-# Function to delete a file given filename in the upload folder
-def delete_file(filename):
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        return True
-    return False
-
 @app.get("/admin/delete/<int:paper_id>")
 @login_required
 def delete_project(paper_id):
@@ -440,6 +448,7 @@ def edit_project_post(paper_id):
     project = Project.query.filter_by(id=paper_id).first()
     mode = "Editing " + project.title
     form = ProjectForm()
+    
     if form.validate_on_submit():
         try:
             project.title = form.title.data
@@ -460,53 +469,55 @@ def edit_project_post(paper_id):
             project.ched_recognized = form.ched_recognized.data
             project.other_database = form.other_database.data
             project.citations = form.citations.data
-            
+
+            # Handle publication proof
             if form.clear_publication_proof.data:
                 pub_filename = project.publication_proof
                 if pub_filename != 'none.png':
-                    delete_file(pub_filename)
+                    delete_file(pub_filename)  # Delete from Supabase
                     project.publication_proof = "none.png"
             elif form.publication_proof.data:
                 pub_filename = project.publication_proof
                 if pub_filename != 'none.png':
-                    delete_file(pub_filename)
+                    delete_file(pub_filename)  # Delete from Supabase
                 publication_proof_filename = get_filename(form.publication_proof.data.filename)
-                publication_proof_path = os.path.join(app.config['UPLOAD_FOLDER'], publication_proof_filename)
-                form.publication_proof.data.save(publication_proof_path)
+                upload_file(publication_proof_filename, form.publication_proof.data)
                 project.publication_proof = publication_proof_filename
-        
+
+            # Handle utilization proof
             if form.clear_utilization_proof.data:
                 util_filename = project.utilization_proof
                 if util_filename != 'none.png':
-                    delete_file(util_filename)
+                    delete_file(util_filename)  # Delete from Supabase
                     project.utilization_proof = "none.png"
             elif form.utilization_proof.data:
                 util_filename = project.utilization_proof
                 if util_filename != 'none.png':
-                    delete_file(util_filename)
+                    delete_file(util_filename)  # Delete from Supabase
                 utilization_proof_filename = get_filename(form.utilization_proof.data.filename)
-                utilization_proof_path = os.path.join(app.config['UPLOAD_FOLDER'], utilization_proof_filename)
-                form.utilization_proof.data.save(utilization_proof_path)
+                upload_file(utilization_proof_filename, form.utilization_proof.data)
                 project.utilization_proof = utilization_proof_filename
-                
+
+            # Handle PDF
             if form.clear_pdf.data:
                 pdf_filename = project.pdf
                 if pdf_filename != 'none.pdf':
-                    delete_file(pdf_filename)
+                    delete_file(pdf_filename)  # Delete from Supabase
                     project.pdf = "none.pdf"
             elif form.pdf.data:
                 pdf_filename = project.pdf
                 if pdf_filename != 'none.pdf':
-                    delete_file(pdf_filename)
+                    delete_file(pdf_filename)  # Delete from Supabase
                 pdf_filename = get_filename(form.pdf.data.filename)
-                pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename)
-                form.pdf.data.save(pdf_path)
+                upload_file(pdf_filename, form.pdf.data)
                 project.pdf = pdf_filename
-            
+
+            # Clear existing author and editor relationships
             AuthorProject.query.filter_by(project_id=project.id).delete()
             EditorProject.query.filter_by(project_id=project.id).delete()
             db.session.commit()
-            
+
+            # Add new authors
             project.authors.clear()
             authors_data = form.authors.data.split(', ')
             for author_name in authors_data:
@@ -517,7 +528,8 @@ def edit_project_post(paper_id):
                     db.session.commit()
                 author_project = AuthorProject(author_id=author.id, project_id=project.id)
                 db.session.add(author_project)
-                
+
+            # Add new editors
             project.editors.clear()
             editors_data = form.editors.data.split(', ')
             for editor_name in editors_data:
@@ -528,7 +540,7 @@ def edit_project_post(paper_id):
                     db.session.commit()
                 editor_project = EditorProject(editor_id=editor.id, project_id=project.id)
                 db.session.add(editor_project)
-            
+
             db.session.commit()
             flash('Project updated successfully', 'success')
             return redirect(url_for('admin'))
