@@ -53,7 +53,12 @@ login_manager.login_message_category = 'info'
 def upload_file(filename, f):
     try:
         _, ext = os.path.splitext(filename)
-        supabase.storage.from_('RPMT').upload(file=f.read(), path=filename, file_options={"content-type": ext[1:]})
+        extension = ext[1:]
+        if extension in ['jpg', 'jpeg', 'png']:
+            mime = f"image/{extension}"
+        else:
+            mime = f"application/{extension}"
+        supabase.storage.from_('RPMT').upload(file=f.read(), path=filename, file_options={"content-type": mime})
     except Exception as e:
         print(f"Error uploading file: {str(e)}")
 
