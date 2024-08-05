@@ -38,29 +38,29 @@ class SearchForm(FlaskForm):
     
 class ProjectForm(FlaskForm):
     title = StringField('Title',
-                        validators=[DataRequired(), Length(max=256)])
+                        validators=[DataRequired(), Length(max=300)])
     abstract = TextAreaField('Abstract',
-                           validators=[Optional(), Length(max=512)])
+                           validators=[Optional(), Length(max=1000)])
     authors = StringField('Authors',
                           validators=[DataRequired(), Length(max=512)])
     type = StringField('Type',
-                       validators=[DataRequired(), Length(max=64)])
+                       validators=[DataRequired(), Length(max=200)])
     date_published = DateField('Date Published',
                                validators=[DataRequired()])
     publication_name = StringField('Publication Name',
-                                   validators=[DataRequired(), Length(max=128)])
+                                   validators=[DataRequired(), Length(max=200)])
     publisher = StringField('Publisher',
-                            validators=[DataRequired(), Length(max=64)])
+                            validators=[DataRequired(), Length(max=200)])
     publisher_type = StringField('Publisher Type',
-                                 validators=[DataRequired(), Length(max=32)])
+                                 validators=[DataRequired(), Length(max=100)])
     publisher_location = StringField('Publisher Location',
-                                     validators=[DataRequired(), Length(max=16)])
+                                     validators=[DataRequired(), Length(max=50)])
     editors = StringField('Editors',
                           validators=[DataRequired(), Length(max=512)])
-    vol_issue_no = IntegerField('Volume/Issue No',
-                                validators=[InputRequired(), NumberRange(min=0)])
+    vol_issue_no = StringField('Volume/Issue No',
+                                validators=[DataRequired(), Length(max=50)])
     doi_url = StringField('DOI URL',
-                          validators=[DataRequired(), Length(max=256)])
+                          validators=[DataRequired(), Length(max=300)])
     isbn_issn = SelectField('ISBN/ISSN',
                             choices=[('NONE', 'None'), ('ISBN', 'ISBN'), ('ISSN', 'ISSN')],
                             validators=[DataRequired()])
