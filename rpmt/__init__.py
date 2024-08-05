@@ -24,8 +24,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024
 
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
 # Supabase
 # ----------------------------------------------------------------------------------------------
 SUPABASE_URL = os.getenv("SUPABASE_URL")

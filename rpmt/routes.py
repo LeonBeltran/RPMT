@@ -1,6 +1,6 @@
-from flask import render_template, flash, redirect, url_for, request, Response
+from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, current_user, logout_user, login_required
-from rpmt import app, db, bcrypt, supabase, upload_file, delete_file, get_file_url
+from rpmt import app, db, bcrypt, upload_file, delete_file, get_file_url
 from rpmt.forms import LoginForm, ProjectForm, SearchForm, UserForm
 from rpmt.models import User, Project, Author, Editor, AuthorProject, EditorProject
 import time
@@ -64,11 +64,7 @@ def download_file(filename):
             file_response = requests.get(url)
             
             if file_response.status_code == 200:
-                return Response(
-                    file_response.content,
-                    mimetype=file_response.headers['Content-Type'],
-                    headers={"Content-Disposition": f"attachment;filename={filename}"}
-                )
+                return redirect(url, code=302)
             else:
                 flash('Failed to download file.', 'danger')
                 return redirect(url_for('project_list'))
