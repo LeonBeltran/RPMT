@@ -176,14 +176,15 @@ def report():
 def search_report():
     form = SearchForm()
     author_search_term = f"%{form.author.data}%"
-    authors = Author.query.filter(Author.name.ilike(author_search_term))
+    authors = Author.query.filter(Author.name.ilike(author_search_term)).all()
     author_data = []
     for author in authors:
-        author_data.append(f"{author.name} has {len(author.projects)} project/s or publications/s")
+        report = f"{author.name} has {len(author.projects)} project/s or publications/s"
+        author_data.append(report)
 
     if author_data == []:
         flash('Author not found', 'danger')
-    return render_template("report.html", form=form, data=author_data)
+    return render_template("report.html", form=form, author_data=author_data)
 
 # Admin: Manage Account
 # ----------------------------------------------------------------------------------------------
