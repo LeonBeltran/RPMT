@@ -36,7 +36,7 @@ def search_projects():
         projects = projects.join(AuthorProject).join(Author).filter(Author.name.ilike(author_search_term))
 
     if projects.all() == []:
-        flash('Project not found', 'danger')
+        flash('This project does not exist. Please check if there are any mistakes.', 'danger')
         projects = Project.query.all()
     return render_template("projectlist.html", data=projects, mode="View", form=form)
 
@@ -53,7 +53,7 @@ def project_page(paper_id):
 def download_file(filename):
     name, _ = os.path.splitext(filename)
     if name == "none":
-        flash('File does not exist.', 'danger')
+        flash('The file does not exist. Please upload the publication/utilization proof image or the pdf file of the research project/publication.', 'danger')
         return redirect(url_for('project_list'))
     else:
         try:
@@ -66,10 +66,10 @@ def download_file(filename):
             if file_response.status_code == 200:
                 return redirect(url, code=302)
             else:
-                flash('Failed to download file.', 'danger')
+                flash('Failed to download file. Please try again.', 'danger')
                 return redirect(url_for('project_list'))
         except Exception as e:
-            flash(f'An error occurred: {str(e)}', 'danger')
+            flash(f'An error occurred: {str(e)}. Please contact the admin or developers if this persists.', 'danger')
             return redirect(url_for('project_list'))
 
 # Admin: Register Page
@@ -77,7 +77,7 @@ def download_file(filename):
 @app.get("/register")
 def register():
     if current_user.is_authenticated:
-        flash(f'Already logged in as {current_user.username}', 'warning')
+        flash(f'Already logged in as {current_user.username}.', 'warning')
         return redirect(url_for('home'))
     form = UserForm()
     return render_template("register.html", form=form)
@@ -103,7 +103,7 @@ def register_post():
         db.session.add(user)
         db.session.commit()
         
-        flash('User Registered', 'success')
+        flash('User Registeration Successful!', 'success')
         return redirect(url_for('login'))  # Redirect to the login page or any other page
     else:
         flash('Registration unsuccessful, please check your credentials.', 'danger')
@@ -114,7 +114,7 @@ def register_post():
 @app.get("/login")
 def login():
     if current_user.is_authenticated:
-        flash(f'Already logged in as {current_user.username}', 'warning')
+        flash(f'Already logged in as {current_user.username}.', 'warning')
         return redirect(url_for('home'))
     form = LoginForm()
     return render_template("login.html", form=form)
@@ -128,11 +128,11 @@ def login_post():
         # Login logic (checking username-password pair)
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            flash(f'Logged in as {user.username}', 'success')
+            flash(f'Logged in as {user.username}.', 'success')
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
-            flash('Login unsuccessful, please check your credentials. Contact the site administrators if you believe something is wrong.', 'danger')
+            flash('Login unsuccessful, please check your credentials.', 'danger')
     return render_template("login.html", form=form)
 
 # Logout
@@ -179,11 +179,11 @@ def search_report():
     authors = Author.query.filter(Author.name.ilike(author_search_term)).all()
     author_data = []
     for author in authors:
-        report = f"{author.name} has {len(author.projects)} project/s or publications/s"
+        report = f"{author.name} has {len(author.projects)} project/s or publications/s."
         author_data.append(report)
 
     if author_data == []:
-        flash('Author not found', 'danger')
+        flash('This author has not been added to the database. Please check if there are any mistakes.', 'danger')
     return render_template("report.html", form=form, author_data=author_data)
 
 # Admin: Manage Account
@@ -212,14 +212,14 @@ def edit_credentials():
                     user.password = bcrypt.generate_password_hash(form.new_password.data).decode("utf-8")
                 user.role = form.role.data
                 db.session.commit()
-                flash('User credentials updated successfully', 'success')
+                flash('User credentials updated successfully!', 'success')
             else:
-                flash('Please input your old password', 'warning')
+                flash('Please input and confirm your old password.', 'warning')
             return redirect(url_for('manage_account'))
                 
         except Exception as e:
             db.session.rollback()
-            flash(f'An error occurred: {str(e)}', 'danger')
+            flash(f'An error occurred: {str(e)}. Please contact the admin or developers if this persists.', 'danger')
             
 
 @app.get("/account/delete")
@@ -230,7 +230,7 @@ def delete_user():
         logout_user()
         db.session.delete(user)
         db.session.commit()
-        flash('User Deleted', 'danger')
+        flash('User has been deleted.', 'danger')
         return redirect(url_for('home'))
     else: 
         # Prevent blank creator in projects
@@ -329,13 +329,13 @@ def add_project_post():
             
             db.session.commit()
         
-            flash('Project created successfully', 'success')
+            flash('Project created successfully.', 'success')
             return redirect(url_for('admin'))
         except Exception as e:
             db.session.rollback()
-            flash(f'An error occurred: {str(e)}', 'danger')
+            flash(f'An error occurred: {str(e)}. Please contact the admin or developers if this persists.', 'danger')
     else:
-        flash('Project creation failed, please try again', 'danger')
+        flash('Project creation failed, please try again.', 'danger')
     return render_template("projectform.html", form=form, mode=mode)
 
 # Admin: Deleting Projects
@@ -372,7 +372,7 @@ def search_delete_projects():
         projects = projects.join(AuthorProject).join(Author).filter(Author.name.ilike(author_search_term))
         
     if projects.all() == []:
-        flash('Project not found', 'danger')
+        flash('This project does not exist. Please check if there are any mistakes.', 'danger')
         projects = possible_projects
     return render_template("deleteprojectlist.html", data=projects, mode="Delete", form=form)
 
@@ -396,9 +396,9 @@ def delete_project(paper_id):
         
         db.session.delete(to_delete)
         db.session.commit()
-        flash('Successfully deleted project', 'success')
+        flash('Successfully deleted project.', 'success')
     else:
-        flash('You do not have permission to delete this project', 'danger')
+        flash('You do not have permission to delete this project. Contact the project creator, admins or chair to delete this project.', 'danger')
     return redirect(url_for('admin'))
 
 # Admin: Editing Projects
@@ -434,7 +434,7 @@ def search_edit_projects():
         projects = projects.join(AuthorProject).join(Author).filter(Author.name.ilike(author_search_term))
         
     if projects.all() == []:
-        flash('Project not found', 'danger')
+        flash('This project does not exist. Please check if there are any mistakes.', 'danger')
         projects = possible_projects
     return render_template("projectlist.html", data=projects, mode="Edit", form=form)
 
@@ -454,7 +454,7 @@ def edit_project(paper_id):
 
         return render_template("projectform.html", mode=mode, form=form)
     else:
-        flash('You do not have permission to edit this project', 'danger')
+        flash('You do not have permission to edit this project. Contact the project creator, admins or chair to edit this project.', 'danger')
         return redirect(url_for('admin'))
     
 @app.post("/admin/edit/<int:paper_id>")
@@ -557,10 +557,10 @@ def edit_project_post(paper_id):
                 db.session.add(editor_project)
 
             db.session.commit()
-            flash('Project updated successfully', 'success')
+            flash('Project updated successfully.', 'success')
             return redirect(url_for('admin'))
         except Exception as e:
             db.session.rollback()
-            flash(f'An error occurred: {str(e)}', 'danger')
+            flash(f'An error occurred: {str(e)}. Please contact the admin or developers if this persists.', 'danger')
 
     return render_template("projectform.html", mode=mode, form=form)
