@@ -165,7 +165,7 @@ def admin():
 @login_required
 def report():
     form = SearchForm()
-    authors = Author.query.all()
+    authors = []
     author_data = []
     for author in authors:
         author_data.append(f"{author.name} has {len(author.projects)} project/s or publication/s")
@@ -183,7 +183,7 @@ def search_report():
 
     if author_data == []:
         flash('Author not found', 'danger')
-    return render_template("projectlist.html", form=form, data=author_data)
+    return render_template("report.html", form=form, data=author_data)
 
 # Admin: Manage Account
 # ----------------------------------------------------------------------------------------------
