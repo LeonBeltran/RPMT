@@ -23,10 +23,16 @@
     </form>
     <div class="row p-3 rounded-3 bg-gradient border border-dark-subtle overflow-y-scroll align-items-center justify-content-center" style="height: 450px">
         {% for entry in data %}
-        <a href="{{ entry.id }}" class="row mb-3 btn btn-secondary d-flex align-items-center justify-content-center" style="width: 95%">
+        <a href="{{ url_for('delete_project', paper_id=entry.id) }}" class="row mb-3 btn btn-secondary d-flex align-items-center justify-content-center" style="width: 95%" onclick="return confirmDelete();">
             <h3 style="height: 100%; overflow-x: auto; white-space: nowrap; text-align: left;">{{ entry.title }}</h3>
         </a>
         {% endfor %}
     </div>
 </div>
+
+<script>
+function confirmDelete() {
+    return confirm("Are you sure you want to delete this project?");
+}
+</script>
 {% endblock %}

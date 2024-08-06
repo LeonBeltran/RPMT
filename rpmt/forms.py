@@ -31,9 +31,9 @@ class LoginForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     title = StringField('Search Title',
-                        validators=[Optional(), Length(max=256)])
+                        validators=[Optional(), Length(max=300)])
     author = StringField('Search Author',
-                         validators=[Optional(), Length(max=128)])
+                         validators=[Optional(), Length(max=512)])
     submit = SubmitField('Search')
     
 class ProjectForm(FlaskForm):

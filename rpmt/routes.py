@@ -29,11 +29,11 @@ def search_projects():
     
     if form.title.data:
         search_term = f"%{form.title.data}%"
-        projects = projects.filter(Project.title.like(search_term))
+        projects = projects.filter(Project.title.ilike(search_term))
         
     if form.author.data:
         author_search_term = f"%{form.author.data}%"
-        projects = projects.join(AuthorProject).join(Author).filter(Author.name.like(author_search_term))
+        projects = projects.join(AuthorProject).join(Author).filter(Author.name.ilike(author_search_term))
 
     if projects.all() == []:
         flash('Project not found', 'danger')
@@ -164,12 +164,26 @@ def admin():
 @app.get("/admin/report")
 @login_required
 def report():
-    # Report based on authors found
+    form = SearchForm()
     authors = Author.query.all()
     author_data = []
     for author in authors:
         author_data.append(f"{author.name} has {len(author.projects)} project/s or publication/s")
-    return render_template("report.html", author_data=author_data)
+    return render_template("report.html", form=form, author_data=author_data)
+
+@app.post("/admin/report")
+@login_required
+def search_report():
+    form = SearchForm()
+    author_search_term = f"%{form.author.data}%"
+    authors = Author.query.filter(Author.name.ilike(author_search_term))
+    author_data = []
+    for author in authors:
+        author_data.append(f"{author.name} has {len(author.projects)} project/s or publications/s")
+
+    if author_data == []:
+        flash('Author not found', 'danger')
+    return render_template("projectlist.html", form=form, data=author_data)
 
 # Admin: Manage Account
 # ----------------------------------------------------------------------------------------------
@@ -335,7 +349,7 @@ def delete_project_list():
     # Faculty can delete projects they added
     else:
         projects = Project.query.filter_by(creator_id=current_user.id)
-    return render_template("projectlist.html", data=projects, mode="Delete", form=form)
+    return render_template("deleteprojectlist.html", data=projects, mode="Delete", form=form)
 
 @app.post("/admin/delete/")
 @login_required
@@ -350,16 +364,16 @@ def search_delete_projects():
         
     if form.title.data:
         search_term = f"%{form.title.data}%"
-        projects = projects.filter(Project.title.like(search_term))
+        projects = projects.filter(Project.title.ilike(search_term))
         
     if form.author.data:
         author_search_term = f"%{form.author.data}%"
-        projects = projects.join(AuthorProject).join(Author).filter(Author.name.like(author_search_term))
+        projects = projects.join(AuthorProject).join(Author).filter(Author.name.ilike(author_search_term))
         
     if projects.all() == []:
         flash('Project not found', 'danger')
         projects = possible_projects
-    return render_template("projectlist.html", data=projects, mode="Delete", form=form)
+    return render_template("deleteprojectlist.html", data=projects, mode="Delete", form=form)
 
 @app.get("/admin/delete/<int:paper_id>")
 @login_required
@@ -412,7 +426,11 @@ def search_edit_projects():
         
     if form.title.data:
         search_term = f"%{form.title.data}%"
-        projects = projects.filter(Project.title.like(search_term))
+        projects = projects.filter(Project.title.ilike(search_term))
+    
+    if form.author.data:
+        author_search_term = f"%{form.author.data}%"
+        projects = projects.join(AuthorProject).join(Author).filter(Author.name.ilike(author_search_term))
         
     if projects.all() == []:
         flash('Project not found', 'danger')

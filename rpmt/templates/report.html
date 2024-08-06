@@ -9,6 +9,20 @@
             <h1>Projects Report</h1>
         </div>
     </div>
+    <form action="#" method="POST">
+        {{ form.hidden_tag() }}
+        <div class="row mb-3 d-flex align-items-center justify-content-center">
+            <div class="col-md-auto">
+                <h1>Projects Report</h1>
+            </div>
+            <div class="col">
+                <div class="row">
+                    {{ form.author(class="form-control w-50 m-1", style="height: 40px;", type="text", placeholder="Search Author") }}
+                    {{ form.submit(class="btn btn-warning m-1", style="width: 15%;") }}
+                </div>
+            </div>
+        </div>
+    </form>
     <div style="text-align: left; height: 450px;" class="row p-3 rounded-3 bg-gradient border border-dark-subtle overflow-y-scroll align-items-center justify-content-center">
         {% for author in author_data %}
             <h4>{{ author }}</h4>
