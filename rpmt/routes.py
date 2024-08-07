@@ -6,6 +6,8 @@ from rpmt.models import User, Project, Author, Editor, AuthorProject, EditorProj
 import time
 import os
 import requests
+import csv
+from io import StringIO
 
 # Home Page
 # ----------------------------------------------------------------------------------------------
@@ -165,26 +167,58 @@ def admin():
 @login_required
 def report():
     form = SearchForm()
-    authors = []
     author_data = []
-    for author in authors:
-        author_data.append(f"{author.name} has {len(author.projects)} project/s or publication/s")
     return render_template("report.html", form=form, author_data=author_data)
 
 @app.post("/admin/report")
 @login_required
 def search_report():
     form = SearchForm()
-    author_search_term = f"%{form.author.data}%"
-    authors = Author.query.filter(Author.name.ilike(author_search_term)).all()
+    authors = []
+    projects = []
     author_data = []
-    for author in authors:
-        report = f"{author.name} has {len(author.projects)} project/s or publications/s."
-        author_data.append(report)
+    project_data = []
+    combined_data = []
 
-    if author_data == []:
-        flash('This author has not been added to the database. Please check if there are any mistakes.', 'danger')
-    return render_template("report.html", form=form, author_data=author_data)
+    if form.author.data:
+        author_search_term = f"%{form.author.data}%"
+        authors = Author.query.filter(Author.name.ilike(author_search_term)).all()
+        for author in authors:
+            project_count = len(author.projects)
+            author_data.append({"type": "Author", "name": author.name, "project_count": project_count})
+
+    if form.start_date.data and form.end_date.data:
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+        projects = Project.query.filter(Project.date_published.between(start_date, end_date)).all()
+        for project in projects:
+            project_data = {
+                "type": "Project",
+                "title": project.title,
+                "date_published": project.date_published,
+                "creator": project.creator.username,
+                "publication_name": project.publication_name,
+            }
+            combined_data.append(project_data)
+
+    combined_data.extend(author_data)
+
+    csv_buffer = StringIO()
+    fieldnames = ["type", "name", "project_count", "title", "date_published", "creator", "publication_name"]
+    writer = csv.DictWriter(csv_buffer, fieldnames=fieldnames)
+    writer.writeheader()
+    for row in combined_data:
+        writer.writerow(row)
+    
+    csv_buffer.seek(0)
+    
+    delete_file('report.csv')
+    upload_file('report.csv', csv_buffer)
+
+    if not authors and not projects:
+        flash('No results found. Please check if there are any mistakes.', 'danger')
+
+    return render_template("report.html", form=form, authors=author_data, projects=projects)
 
 # Admin: Manage Account
 # ----------------------------------------------------------------------------------------------

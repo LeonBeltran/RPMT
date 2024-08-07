@@ -34,6 +34,10 @@ class SearchForm(FlaskForm):
                         validators=[Optional(), Length(max=300)])
     author = StringField('Search Author',
                          validators=[Optional(), Length(max=512)])
+    start_date = DateField('Start Date',
+                           validators=[Optional()])
+    end_date = DateField('End Date',
+                           validators=[Optional()])
     submit = SubmitField('Search')
     
 class ProjectForm(FlaskForm):

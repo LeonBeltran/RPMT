@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 import sys
 import os
+from io import StringIO
 
 # Setup
 # ----------------------------------------------------------------------------------------------
@@ -50,7 +51,7 @@ login_manager.login_message_category = 'info'
 
 # Supabase Functions
 # ----------------------------------------------------------------------------------------------
-def upload_file(filename, f):
+def upload_file(filename, file_content):
     try:
         _, ext = os.path.splitext(filename)
         extension = ext[1:]
@@ -58,7 +59,15 @@ def upload_file(filename, f):
             mime = f"image/{extension}"
         else:
             mime = f"application/{extension}"
-        supabase.storage.from_('RPMT').upload(file=f.read(), path=filename, file_options={"content-type": mime})
+
+        if isinstance(file_content, StringIO):
+            file_content = file_content.getvalue().encode('utf-8')
+        elif isinstance(file_content, str):
+            file_content = file_content.encode('utf-8')
+        else:
+            file_content = file_content.read()
+
+        supabase.storage.from_('RPMT').upload(filename, file_content, {"content-type": mime})
     except Exception as e:
         print(f"Error uploading file: {str(e)}")
 
