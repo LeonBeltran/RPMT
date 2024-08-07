@@ -174,51 +174,80 @@ def report():
 @login_required
 def search_report():
     form = SearchForm()
-    authors = []
     projects = []
-    author_data = []
-    project_data = []
     combined_data = []
 
     if form.author.data:
         author_search_term = f"%{form.author.data}%"
         authors = Author.query.filter(Author.name.ilike(author_search_term)).all()
-        for author in authors:
-            project_count = len(author.projects)
-            author_data.append({"type": "Author", "name": author.name, "project_count": project_count})
+        author_ids = [author.id for author in authors]
+        
+        # Filter projects based on the selected authors
+        projects = Project.query.join(AuthorProject).filter(AuthorProject.author_id.in_(author_ids)).all()
+    else:
+    # If no author filter, include all projects
+        projects = Project.query.all()
 
     if form.start_date.data and form.end_date.data:
         start_date = form.start_date.data
         end_date = form.end_date.data
         projects = Project.query.filter(Project.date_published.between(start_date, end_date)).all()
-        for project in projects:
-            project_data = {
-                "type": "Project",
-                "title": project.title,
-                "date_published": project.date_published,
-                "creator": project.creator.username,
-                "publication_name": project.publication_name,
-            }
-            combined_data.append(project_data)
 
-    combined_data.extend(author_data)
+    for project in projects:
+        # Collect authors
+        author_names = [author.name for author in Author.query.join(AuthorProject).filter(AuthorProject.project_id == project.id).all()]
+        author_list = ", ".join(author_names)
 
+        # Collect editors
+        editor_names = [editor.name for editor in Editor.query.join(EditorProject).filter(EditorProject.project_id == project.id).all()]
+        editor_list = ", ".join(editor_names)
+
+        # Collect project details
+        project_data = {
+            "title": project.title,
+            "date_published": project.date_published,
+            "authors": author_list,
+            "doi_url": project.doi_url,
+            "citations": project.citations,
+            "publication_name": project.publication_name,
+            "publisher": project.publisher,
+            "publisher_type": project.publisher_type,
+            "publisher_location": project.publisher_location,
+            "vol_issue_no": project.vol_issue_no,
+            "editors": editor_list,
+            "isbn_issn": project.isbn_issn,
+            "web_of_science": project.web_of_science,
+            "elsevier_scopus": project.elsevier_scopus,
+            "elsevier_sciencedirect": project.elsevier_sciencedirect,
+            "pubmed_medline": project.pubmed_medline,
+            "ched_recognized": project.ched_recognized,
+            "other_database": project.other_database
+        }
+        combined_data.append(project_data)
+
+    # Save combined data as CSV
     csv_buffer = StringIO()
-    fieldnames = ["type", "name", "project_count", "title", "date_published", "creator", "publication_name"]
+    fieldnames = [
+        "title", "date_published", "authors", "doi_url", "citations", "publication_name", 
+        "publisher", "publisher_type", "publisher_location", "vol_issue_no", "editors", 
+        "isbn_issn", "web_of_science", "elsevier_scopus", "elsevier_sciencedirect", 
+        "pubmed_medline", "ched_recognized", "other_database"
+    ]
     writer = csv.DictWriter(csv_buffer, fieldnames=fieldnames)
     writer.writeheader()
     for row in combined_data:
         writer.writerow(row)
     
     csv_buffer.seek(0)
-    
+
+    # Delete existing file and upload new CSV
     delete_file('report.csv')
     upload_file('report.csv', csv_buffer)
 
-    if not authors and not projects:
+    if not projects:
         flash('No results found. Please check if there are any mistakes.', 'danger')
 
-    return render_template("report.html", form=form, authors=author_data, projects=projects)
+    return render_template("report.html", form=form, projects=projects)
 
 # Admin: Manage Account
 # ----------------------------------------------------------------------------------------------
